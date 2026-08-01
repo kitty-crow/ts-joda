@@ -3,7 +3,7 @@ import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import virtual from '@rollup/plugin-virtual';
 import type { RollupOptions } from 'rollup';
-import { mergeConfig } from '../../shared/rollup-config.ts';
+import { merge as mergeConfig } from '../../tools/src/build/rollup.ts';
 import { defaultConfig, plugins } from './rollup.config.ts';
 import renderCldrDataLoader from './utils/clrdr-data-render.ts';
 
