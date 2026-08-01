@@ -15,7 +15,7 @@ It is intentionally separate from the project README, which remains focused on u
 
 ## Compatibility gates
 
-`compat/api-baseline.lock.json` freezes the pre-refactor package metadata and declaration files.
+`compat/api-baseline.lock.json` freezes the pre-refactor package metadata, declaration files, command names and historical published source paths.
 
 ```sh
 npm run typecheck:tools
@@ -35,13 +35,25 @@ npx lerna run --stream test-ts-definitions
 cd packages/examples && npm test
 ```
 
+## Completed milestones
+
+### Repository tooling
+
+Repository and package tooling now has one implementation home under `tools/src`. Package-root Rollup and Karma files are thin declarative adapters. Compatibility capture, auditing, package-source generation and build helpers are split by responsibility rather than duplicated across packages.
+
+### `@js-joda/timezone`
+
+The maintained runtime is strict TypeScript, organised into data, rules and plugin responsibilities under `src/`. Flat TypeScript facades retain the historical source layout, while package preparation emits the original `.js` deep-import paths and removes them again after packing.
+
+Behavioural parity was checked against the pre-refactor implementation across all 597 zone IDs and 723,846 offset, transition and local-date-time cases. The original package manifest, declarations, bundle entry points and nine historical flat source paths remain compatibility requirements.
+
 ## Migration order
 
-1. Lock package metadata, declarations and distribution entry points.
-2. Convert repository tooling and build configuration.
-3. Convert `@js-joda/core` source and tests.
-4. Convert timezone, locale and extra packages.
-5. Convert examples and generated-package tooling.
+1. Lock package metadata, declarations, commands and published source paths.
+2. Consolidate repository tooling and build configuration.
+3. Convert timezone, extra and locale packages with package-source compatibility bridges.
+4. Convert `@js-joda/core` source and tests.
+5. Convert examples and remaining tests or generated-package tooling.
 6. Enable the zero-JavaScript CI gate.
-7. Run full build, Node, browser, declaration and integration parity checks.
-8. Apply the major-version increase, squash the branch and fast-forward `main`.
+7. Run full build, Node, browser, declaration, package and integration parity checks.
+8. Apply the major-version increases, squash the branch and fast-forward `main`.
