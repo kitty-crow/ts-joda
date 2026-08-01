@@ -27,7 +27,7 @@
   },
   "scripts": {
     "postpublish": "npm run build-esdoc && ./shared/git-push-docs-on-change.sh",
-    "build-esdoc": "./node_modules/.bin/esdoc -c esdoc.json",
+    "build-esdoc": "tsx tools/src/commands/docs.ts",
     "build-test-coverage-report": "./shared/build-test-coverage-report.sh",
     "audit:source": "tsx tools/src/commands/inventory.ts",
     "api:capture": "tsx tools/src/commands/api-capture.ts",
