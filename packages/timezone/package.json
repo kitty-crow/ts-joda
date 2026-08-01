@@ -15,14 +15,18 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run build-dist",
-    "test": "NODE_ENV=test npx mocha --timeout 5000 --require @babel/register ./test/*Test.js ./test/**/*Test.js",
-    "test-coverage": "NODE_ENV=test COVERAGE=1 npx nyc --report-dir=build/coverage --reporter=lcov --reporter html npx mocha --timeout 5000 --require @babel/register --reporter progress ./test/*Test.js ./test/**/*Test.js ./test/**/**/*Test.js",
-    "test-browser": "NODE_OPTIONS='--import tsx' npx karma start karma.conf.ts --reporters=dots --single-run",
+    "test": "npm run build-source && NODE_ENV=test npm run with-source -- npx mocha --timeout 5000 --require @babel/register ./test/*Test.js ./test/**/*Test.js",
+    "test-coverage": "npm run build-source && NODE_ENV=test COVERAGE=1 npm run with-source -- npx nyc --report-dir=build/coverage --reporter=lcov --reporter html npx mocha --timeout 5000 --require @babel/register --reporter progress ./test/*Test.js ./test/**/*Test.js ./test/**/**/*Test.js",
+    "test-browser": "npm run build-source && NODE_OPTIONS='--import tsx' npm run with-source -- npx karma start karma.conf.ts --reporters=dots --single-run",
     "test-ts-definitions": "TS_NODE_PROJECT='../../shared/ts-test-config.json' NODE_ENV=test mocha --timeout 5000 --require ts-node/register ./test/typescript_definitions/*.ts",
     "test-ci": "npm run build-dist && npm run test && npm run test-browser && npm run test-ts-definitions && npm run test-coverage",
-    "build-dist": "NODE_OPTIONS='--import tsx' npx rollup -c rollup.config.ts",
+    "build-dist": "npm run build-source && npm run with-source -- npx rollup -c rollup.config.ts",
     "transform-data": "tsx transform-data.ts",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "build-source": "tsc -p tsconfig.json",
+    "with-source": "tsx ../../tools/src/commands/source-run.ts",
+    "prepack": "npm run build-source && tsx ../../tools/src/commands/package-source.ts install",
+    "postpack": "tsx ../../tools/src/commands/package-source.ts clean"
   },
   "repository": {
     "type": "git",
