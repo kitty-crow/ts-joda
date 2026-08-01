@@ -33,6 +33,7 @@ declare module '@rollup/plugin-babel' {
     export function babel(options: BabelOptions): Plugin;
 }
 
+
 declare module '@rollup/plugin-node-resolve' {
     import type { Plugin } from 'rollup';
     export function nodeResolve(): Plugin;
@@ -113,6 +114,7 @@ declare module 'karma' {
     }
 }
 
+
 declare module 'ejs' {
     interface RenderData {
         readonly [key: string]: unknown;
@@ -129,4 +131,9 @@ declare module 'cldr-data/availableLocales.json' {
         readonly availableLocales: readonly string[];
     };
     export default data;
+}
+
+declare module 'moment-timezone/moment-timezone-utils' {
+    const moment: unknown;
+    export default moment;
 }

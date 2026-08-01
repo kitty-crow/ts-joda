@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "packages": {
     "@js-joda/core": {
       "manifest": {
@@ -16,6 +16,94 @@
         ]
       },
       "manifestPath": "packages/core/package.json",
+      "scriptNames": [
+        "build-dist",
+        "build-gz-check",
+        "build-md-toc",
+        "lint",
+        "prepublishOnly",
+        "test",
+        "test-browser",
+        "test-ci",
+        "test-coverage",
+        "test-ts-definitions"
+      ],
+      "sourcePaths": [
+        "src/Clock.js",
+        "src/DayOfWeek.js",
+        "src/Duration.js",
+        "src/Enum.js",
+        "src/Instant.js",
+        "src/LocalDate.js",
+        "src/LocalDateTime.js",
+        "src/LocalTime.js",
+        "src/MathUtil.js",
+        "src/Month.js",
+        "src/MonthDay.js",
+        "src/OffsetDateTime.js",
+        "src/OffsetTime.js",
+        "src/Period.js",
+        "src/StringUtil.js",
+        "src/Year.js",
+        "src/YearConstants.js",
+        "src/YearMonth.js",
+        "src/ZoneId.js",
+        "src/ZoneIdFactory.js",
+        "src/ZoneOffset.js",
+        "src/ZoneRegion.js",
+        "src/ZonedDateTime.js",
+        "src/_init.js",
+        "src/assert.js",
+        "src/chrono/ChronoLocalDate.js",
+        "src/chrono/ChronoLocalDateTime.js",
+        "src/chrono/ChronoZonedDateTime.js",
+        "src/chrono/IsoChronology.js",
+        "src/convert.js",
+        "src/errors.js",
+        "src/format/DateTimeBuilder.js",
+        "src/format/DateTimeFormatter.js",
+        "src/format/DateTimeFormatterBuilder.js",
+        "src/format/DateTimeParseContext.js",
+        "src/format/DateTimePrintContext.js",
+        "src/format/DecimalStyle.js",
+        "src/format/EnumMap.js",
+        "src/format/ParsePosition.js",
+        "src/format/ResolverStyle.js",
+        "src/format/SignStyle.js",
+        "src/format/StringBuilder.js",
+        "src/format/TextStyle.js",
+        "src/format/parser/CharLiteralPrinterParser.js",
+        "src/format/parser/CompositePrinterParser.js",
+        "src/format/parser/FractionPrinterParser.js",
+        "src/format/parser/NumberPrinterParser.js",
+        "src/format/parser/OffsetIdPrinterParser.js",
+        "src/format/parser/PadPrinterParserDecorator.js",
+        "src/format/parser/SettingsParser.js",
+        "src/format/parser/StringLiteralPrinterParser.js",
+        "src/format/parser/ZoneIdPrinterParser.js",
+        "src/js-joda.js",
+        "src/nativeJs.js",
+        "src/temporal/ChronoField.js",
+        "src/temporal/ChronoUnit.js",
+        "src/temporal/IsoFields.js",
+        "src/temporal/Temporal.js",
+        "src/temporal/TemporalAccessor.js",
+        "src/temporal/TemporalAdjuster.js",
+        "src/temporal/TemporalAdjusters.js",
+        "src/temporal/TemporalAmount.js",
+        "src/temporal/TemporalField.js",
+        "src/temporal/TemporalQueries.js",
+        "src/temporal/TemporalQueriesFactory.js",
+        "src/temporal/TemporalQuery.js",
+        "src/temporal/TemporalUnit.js",
+        "src/temporal/ValueRange.js",
+        "src/use.js",
+        "src/zone/SystemDefaultZoneId.js",
+        "src/zone/SystemDefaultZoneRules.js",
+        "src/zone/ZoneOffsetTransition.js",
+        "src/zone/ZoneRules.js",
+        "src/zone/ZoneRulesProvider.js"
+      ],
       "types": {
         "path": "packages/core/typings/js-joda.d.ts",
         "sha256": "e4d18a228116165335e07f0624c75b5a66adabeaf1918f27df36cf8d74f3388b"
@@ -30,7 +118,11 @@
           "@js-joda/core": ">=5.7.0"
         }
       },
-      "manifestPath": "packages/examples/package.json"
+      "manifestPath": "packages/examples/package.json",
+      "scriptNames": [
+        "test"
+      ],
+      "sourcePaths": []
     },
     "@js-joda/extra": {
       "manifest": {
@@ -50,6 +142,31 @@
         }
       },
       "manifestPath": "packages/extra/package.json",
+      "scriptNames": [
+        "build-dist",
+        "lint",
+        "prepublishOnly",
+        "test",
+        "test-browser",
+        "test-ci",
+        "test-coverage",
+        "test-ts-definitions"
+      ],
+      "sourcePaths": [
+        "src/DayOfMonth.js",
+        "src/DayOfYear.js",
+        "src/Interval.js",
+        "src/LocalDateRange.js",
+        "src/OffsetDate.js",
+        "src/Quarter.js",
+        "src/Temporals.js",
+        "src/YearQuarter.js",
+        "src/YearWeek.js",
+        "src/_init.js",
+        "src/assert.js",
+        "src/js-joda-extra.js",
+        "src/plug.js"
+      ],
       "types": {
         "path": "packages/extra/typings/js-joda-extra.d.ts",
         "sha256": "c1a48051d21c10805950e572e3f5b2b98727e455281e95b9c769c79bfb88fd7c"
@@ -76,6 +193,38 @@
         }
       },
       "manifestPath": "packages/locale/package.json",
+      "scriptNames": [
+        "build-dist",
+        "build-examples",
+        "build-locale-dist",
+        "build-prebuilt",
+        "create-packages",
+        "lint",
+        "prepublishOnly",
+        "test",
+        "test-browser",
+        "test-ci",
+        "test-coverage",
+        "test-ts-definitions"
+      ],
+      "sourcePaths": [
+        "src/Locale.js",
+        "src/_init.js",
+        "src/format/LocaleDateTimeFormatter.js",
+        "src/format/LocaleStore.js",
+        "src/format/cldr/CldrCache.js",
+        "src/format/cldr/CldrDateTimeFormatterBuilder.js",
+        "src/format/cldr/CldrDateTimeTextProvider.js",
+        "src/format/cldr/CldrZoneTextPrinterParser.js",
+        "src/format/parser/LocalizedOffsetPrinterParser.js",
+        "src/format/parser/TextPrinterParser.js",
+        "src/format/parser/WeekFieldsPrinterParser.js",
+        "src/js-joda-locale.js",
+        "src/license-preamble.js",
+        "src/plug.js",
+        "src/supplemental-data.js",
+        "src/temporal/WeekFields.js"
+      ],
       "types": {
         "path": "packages/locale/typings/js-joda-locale.d.ts",
         "sha256": "84dabf57dce994203e8160321942312532689d79f4423189f2c6e0a852717dd2"
@@ -100,6 +249,28 @@
         }
       },
       "manifestPath": "packages/timezone/package.json",
+      "scriptNames": [
+        "build-dist",
+        "lint",
+        "prepublishOnly",
+        "test",
+        "test-browser",
+        "test-ci",
+        "test-coverage",
+        "test-ts-definitions",
+        "transform-data"
+      ],
+      "sourcePaths": [
+        "src/MomentZoneRules.js",
+        "src/MomentZoneRulesProvider.js",
+        "src/auto-plug.js",
+        "src/js-joda-timezone-empty.js",
+        "src/js-joda-timezone.js",
+        "src/plug.js",
+        "src/system-default-zone.js",
+        "src/tzdbData.js",
+        "src/unpack.js"
+      ],
       "types": {
         "path": "packages/timezone/typings/js-joda-timezone.d.ts",
         "sha256": "4f1bad288ada6326583a3e6a0a54d7627a03eac3b668adeea9dded12ac5656b8"

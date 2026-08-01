@@ -29,11 +29,11 @@
     "postpublish": "npm run build-esdoc && ./shared/git-push-docs-on-change.sh",
     "build-esdoc": "./node_modules/.bin/esdoc -c esdoc.json",
     "build-test-coverage-report": "./shared/build-test-coverage-report.sh",
-    "audit:source": "tsx scripts/inventory.ts",
-    "api:capture": "tsx scripts/capture-api.ts",
-    "api:lock": "tsx scripts/lock-api.ts",
-    "check:api": "tsx scripts/check-api.ts",
-    "check:no-js": "tsx scripts/check-no-js.ts",
+    "audit:source": "tsx tools/src/commands/inventory.ts",
+    "api:capture": "tsx tools/src/commands/api-capture.ts",
+    "api:lock": "tsx tools/src/commands/api-lock.ts",
+    "check:api": "tsx tools/src/commands/api-check.ts",
+    "check:no-js": "tsx tools/src/commands/no-js.ts",
     "typecheck:tools": "tsc -p tsconfig.tools.json",
     "check:refactor": "npm run typecheck:tools && npm run check:api"
   },
@@ -51,7 +51,6 @@
     "@rollup/plugin-virtual": "^3.0.2",
     "@types/chai": "^4.3.20",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^18.11.17",
     "babel-loader": "^9.2.1",
     "babel-plugin-add-module-exports": "^1.0.4",
     "babel-plugin-istanbul": "^6.1.1",
@@ -84,9 +83,10 @@
     "rollup": "^3.30.0",
     "rollup-plugin-minification": "^0.2.0",
     "ts-node": "^10.9.2",
-    "tsx": "^4.20.3",
     "typescript": "^5.8.3",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "@types/node": "^18.11.17",
+    "tsx": "^4.20.3"
   },
   "resolutions": {
     "webdriverio": "^7.19.5"

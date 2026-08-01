@@ -4,8 +4,7 @@ import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
 import type { Plugin, RollupOptions } from 'rollup';
 import { terser } from 'rollup-plugin-minification';
-import { mergeConfig } from '../../shared/rollup-config.ts';
-import { createBanner } from '../../shared/rollup-utils.ts';
+import { banner as packageBanner, merge } from '../../tools/src/build/rollup.ts';
 import tzdb from './data/unpacked/latest.json' with { type: 'json' };
 import pkg from './package.json' with { type: 'json' };
 
@@ -13,11 +12,11 @@ function empty(suffix: string): boolean {
     return suffix === '-empty';
 }
 
-function banner(suffix = ''): string {
+function buildBanner(suffix = ''): string {
     const version = empty(suffix)
         ? pkg.version
         : `${pkg.version}-${tzdb.version}${suffix}`;
-    return createBanner({ name: pkg.name, version });
+    return packageBanner({ name: pkg.name, version });
 }
 
 export const plugins = {
@@ -41,7 +40,7 @@ function base(suffix: string): RollupOptions {
         input: input(suffix),
         plugins: [plugins.replace(suffix), plugins.babel, plugins.json],
         output: {
-            banner: banner(suffix),
+            banner: buildBanner(suffix),
             name: 'JSJodaTimezone',
             globals: {
                 '@js-joda/core': 'JSJoda',
@@ -54,21 +53,21 @@ function base(suffix: string): RollupOptions {
 function builds(suffix: string): RollupOptions[] {
     const config = base(suffix);
     return [
-        mergeConfig(config, {
+        merge(config, {
             output: {
                 file: `dist/js-joda-timezone${suffix}.js`,
                 format: 'umd',
                 sourcemap: true,
             },
         }),
-        mergeConfig(config, {
+        merge(config, {
             output: {
                 file: `dist/js-joda-timezone${suffix}.esm.js`,
                 format: 'es',
                 sourcemap: true,
             },
         }),
-        mergeConfig(config, {
+        merge(config, {
             plugins: [...(config.plugins ?? []), plugins.minify],
             output: {
                 file: `dist/js-joda-timezone${suffix}.min.js`,

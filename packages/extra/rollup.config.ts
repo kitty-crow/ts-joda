@@ -1,53 +1,26 @@
-import { babel } from '@rollup/plugin-babel';
-import type { Plugin, RollupOptions } from 'rollup';
-import { terser } from 'rollup-plugin-minification';
-import { mergeConfig } from '../../shared/rollup-config.ts';
-import { createBanner } from '../../shared/rollup-utils.ts';
+import type { RollupOptions } from 'rollup';
+import {
+    banner,
+    libraryBuilds,
+    standardPlugins,
+} from '../../tools/src/build/rollup.ts';
 import pkg from './package.json' with { type: 'json' };
 
-export const plugins = {
-    babel: babel({ babelHelpers: 'bundled' }),
-    minify: terser({ output: { comments: /^!/u } }),
-} satisfies Record<string, Plugin>;
-
-export const defaultConfig = {
+export const plugins = standardPlugins();
+export const base = {
     input: './src/js-joda-extra.js',
     plugins: [plugins.babel],
     output: {
-        banner: createBanner(pkg),
+        banner: banner(pkg),
         name: 'JSJodaExtra',
-        globals: {
-            '@js-joda/core': 'JSJoda',
-        },
+        globals: { '@js-joda/core': 'JSJoda' },
     },
     external: ['@js-joda/core'],
 } satisfies RollupOptions;
 
-const configs: RollupOptions[] = [
-    mergeConfig(defaultConfig, {
-        output: {
-            file: 'dist/js-joda-extra.esm.js',
-            format: 'es',
-            sourcemap: true,
-        },
-    }),
-    mergeConfig(defaultConfig, {
-        output: {
-            file: 'dist/js-joda-extra.js',
-            format: 'umd',
-            name: 'JSJodaExtra',
-            sourcemap: true,
-        },
-    }),
-    mergeConfig(defaultConfig, {
-        plugins: [plugins.babel, plugins.minify],
-        output: {
-            file: 'dist/js-joda-extra.min.js',
-            format: 'iife',
-            name: 'JSJodaExtra',
-            sourcemap: false,
-        },
-    }),
-];
-
-export default configs;
+export default libraryBuilds(base, {
+    esm: 'dist/js-joda-extra.esm.js',
+    umd: 'dist/js-joda-extra.js',
+    min: 'dist/js-joda-extra.min.js',
+    global: 'JSJodaExtra',
+}, plugins.minify);

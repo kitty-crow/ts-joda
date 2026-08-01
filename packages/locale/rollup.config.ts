@@ -4,8 +4,8 @@ import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import type { Plugin, RollupOptions } from 'rollup';
 import { terser } from 'rollup-plugin-minification';
-import { mergeConfig } from '../../shared/rollup-config.ts';
-import { createBanner } from '../../shared/rollup-utils.ts';
+import { merge } from '../../tools/src/build/rollup.ts';
+import { banner } from '../../tools/src/build/rollup.ts';
 import pkg from './package.json' with { type: 'json' };
 
 export const plugins = {
@@ -17,7 +17,7 @@ export const defaultConfig = {
     input: './src/js-joda-locale.js',
     plugins: [nodeResolve(), commonjs(), json(), plugins.babel],
     output: {
-        banner: createBanner(pkg),
+        banner: banner(pkg),
         globals: {
             '@js-joda/core': 'JSJoda',
             '@js-joda/timezone': 'JSJodaTimezone',
@@ -28,14 +28,14 @@ export const defaultConfig = {
 } satisfies RollupOptions;
 
 const configs: RollupOptions[] = [
-    mergeConfig(defaultConfig, {
+    merge(defaultConfig, {
         output: {
             file: 'dist/js-joda-locale.esm.js',
             format: 'es',
             sourcemap: true,
         },
     }),
-    mergeConfig(defaultConfig, {
+    merge(defaultConfig, {
         output: {
             file: 'dist/js-joda-locale.js',
             format: 'umd',
@@ -43,7 +43,7 @@ const configs: RollupOptions[] = [
             sourcemap: true,
         },
     }),
-    mergeConfig(defaultConfig, {
+    merge(defaultConfig, {
         plugins: [nodeResolve(), commonjs(), json(), plugins.babel, plugins.minify],
         output: {
             file: 'dist/js-joda-locale.min.js',

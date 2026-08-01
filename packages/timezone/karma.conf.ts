@@ -1,6 +1,6 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import type { Config, ConfigOptions } from 'karma';
-import testGlob from '../../shared/rollup-test-glob.ts';
+import { testGlob } from '../../tools/src/build/rollup.ts';
 import { plugins } from './rollup.config.ts';
 
 export default function configure(config: Config): void {
