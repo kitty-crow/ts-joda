@@ -38,6 +38,8 @@ jobs:
           npx lerna clean -y;
           npx lerna link;
           npx lerna bootstrap --no-ci;
+      - name: Check refactor compatibility
+        run: npm run check:refactor
       - name: Build
         run: |
           set -e;
