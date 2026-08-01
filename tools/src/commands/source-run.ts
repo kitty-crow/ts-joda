@@ -19,8 +19,8 @@ function run(command: string, args: readonly string[]): Promise<number> {
 }
 
 const [command, ...args] = process.argv.slice(2);
-if (command === undefined) {
-    throw new Error('Expected a command to run with generated source');
+if (command === undefined || command.trim().length === 0) {
+    throw new Error('Expected a non-empty command to run with generated source');
 }
 
 await installPublishedSource();
