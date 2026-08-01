@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "packages": {
+    "@js-joda/core": {
+      "manifest": {
+        "name": "@js-joda/core",
+        "main": "dist/js-joda.js",
+        "module": "dist/js-joda.esm.js",
+        "typings": "typings/js-joda.d.ts",
+        "files": [
+          "dist",
+          "src",
+          "typings",
+          "CHANGELOG.md",
+          "README.md"
+        ]
+      },
+      "manifestPath": "packages/core/package.json",
+      "types": {
+        "path": "packages/core/typings/js-joda.d.ts",
+        "sha256": "e4d18a228116165335e07f0624c75b5a66adabeaf1918f27df36cf8d74f3388b"
+      }
+    },
+    "@js-joda/examples": {
+      "manifest": {
+        "name": "@js-joda/examples",
+        "private": true,
+        "main": "index.js",
+        "peerDependencies": {
+          "@js-joda/core": ">=5.7.0"
+        }
+      },
+      "manifestPath": "packages/examples/package.json"
+    },
+    "@js-joda/extra": {
+      "manifest": {
+        "name": "@js-joda/extra",
+        "main": "dist/js-joda-extra.js",
+        "module": "dist/js-joda-extra.esm.js",
+        "typings": "typings/js-joda-extra.d.ts",
+        "files": [
+          "dist",
+          "src",
+          "typings",
+          "CHANGELOG.md",
+          "README.md"
+        ],
+        "peerDependencies": {
+          "@js-joda/core": ">=5.7.0"
+        }
+      },
+      "manifestPath": "packages/extra/package.json",
+      "types": {
+        "path": "packages/extra/typings/js-joda-extra.d.ts",
+        "sha256": "c1a48051d21c10805950e572e3f5b2b98727e455281e95b9c769c79bfb88fd7c"
+      }
+    },
+    "@js-joda/locale": {
+      "manifest": {
+        "name": "@js-joda/locale",
+        "main": "dist/js-joda-locale.js",
+        "module": "dist/js-joda-locale.esm.js",
+        "typings": "typings/js-joda-locale.d.ts",
+        "files": [
+          "dist",
+          "src",
+          "typings",
+          "CHANGELOG.md",
+          "README.md"
+        ],
+        "peerDependencies": {
+          "@js-joda/core": ">=6.0.0",
+          "@js-joda/timezone": "^2.25.0",
+          "cldr-data": "*",
+          "cldrjs": "^0.5.5"
+        }
+      },
+      "manifestPath": "packages/locale/package.json",
+      "types": {
+        "path": "packages/locale/typings/js-joda-locale.d.ts",
+        "sha256": "84dabf57dce994203e8160321942312532689d79f4423189f2c6e0a852717dd2"
+      }
+    },
+    "@js-joda/timezone": {
+      "manifest": {
+        "name": "@js-joda/timezone",
+        "main": "dist/js-joda-timezone.js",
+        "module": "dist/js-joda-timezone.esm.js",
+        "typings": "typings/js-joda-timezone.d.ts",
+        "files": [
+          "dist",
+          "src",
+          "typings",
+          "bower.json",
+          "CHANGELOG.md",
+          "README.md"
+        ],
+        "peerDependencies": {
+          "@js-joda/core": ">=5.7.0"
+        }
+      },
+      "manifestPath": "packages/timezone/package.json",
+      "types": {
+        "path": "packages/timezone/typings/js-joda-timezone.d.ts",
+        "sha256": "4f1bad288ada6326583a3e6a0a54d7627a03eac3b668adeea9dded12ac5656b8"
+      }
+    }
+  }
+}
