@@ -46,11 +46,18 @@ if (parsed.values.help) {
     process.exit(0);
 }
 
+function requiredString(value: string | undefined, name: string): string {
+    if (value === undefined || value.length === 0) {
+        throw new Error(`${name} must be a non-empty path`);
+    }
+    return value;
+}
+
 const groups = parsed.values.packages === undefined
     ? defaults.packages
     : JSON.parse(parsed.values.packages) as Readonly<Record<string, readonly string[]>>;
-const packagesDir = parsed.values.packagesDir;
-const prebuiltDir = parsed.values.prebuiltDir;
+const packagesDir = requiredString(parsed.values.packagesDir, 'packagesDir');
+const prebuiltDir = requiredString(parsed.values.prebuiltDir, 'prebuiltDir');
 
 if (parsed.values.debug) {
     console.log('create_packages options', { packagesDir, prebuiltDir, groups });
