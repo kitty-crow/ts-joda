@@ -1,0 +1,6 @@
+{
+  "require": [
+    "tsx/cjs",
+    "test/cldr-setup.ts"
+  ]
+}
