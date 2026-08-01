@@ -25,6 +25,7 @@
     "shared/**/*.ts",
     "shared/**/*.d.ts",
     "packages/*/rollup*.ts",
-    "packages/*/karma.conf.ts"
+    "packages/*/karma.conf.ts",
+    "packages/locale/test/cldr-setup.ts"
   ]
 }
