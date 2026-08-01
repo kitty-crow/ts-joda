@@ -27,7 +27,16 @@ if (parsed.values.help) {
     process.exit(0);
 }
 
-const { packagesDir, mainDir, dryRun, beta, debug } = parsed.values;
+function requiredString(value: string | undefined, name: string): string {
+    if (value === undefined || value.length === 0) {
+        throw new Error(`${name} must be a non-empty path`);
+    }
+    return value;
+}
+
+const packagesDir = requiredString(parsed.values.packagesDir, 'packagesDir');
+const mainDir = requiredString(parsed.values.mainDir, 'mainDir');
+const { dryRun, beta, debug } = parsed.values;
 const args = ['publish', '--access=public'];
 if (beta) {
     args.push('--tag', 'beta');
