@@ -21,6 +21,10 @@
     ]
   },
   "include": [
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "shared/**/*.ts",
+    "shared/**/*.d.ts",
+    "packages/*/rollup*.ts",
+    "packages/*/karma.conf.ts"
   ]
 }
