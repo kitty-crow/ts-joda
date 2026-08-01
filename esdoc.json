@@ -1,5 +1,5 @@
 {
-  "source": "./packages/",
+  "source": "./.build/esdoc-source/packages/",
   "destination": "./docs",
   "includes": ["^.*/src/.*\\.js$"],
   "excludes": ["/node_modules/", "/examples/"],
