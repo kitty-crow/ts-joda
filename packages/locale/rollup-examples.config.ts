@@ -2,7 +2,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import virtual from '@rollup/plugin-virtual';
 import type { Plugin, RollupOptions } from 'rollup';
-import { mergeConfig } from '../../shared/rollup-config.ts';
+import { merge as mergeConfig } from '../../tools/src/build/rollup.ts';
 import { buildRollupConfig } from './rollup-build-packages-config.ts';
 import { plugins } from './rollup.config.ts';
 import renderCldrDataLoader from './utils/clrdr-data-render.ts';
