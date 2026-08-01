@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -25,6 +25,11 @@ export interface Workspace {
     readonly manifest: Manifest;
 }
 
+export interface ListFilesOptions {
+    readonly skipDirs?: ReadonlySet<string>;
+    readonly skipDir?: (path: string) => boolean;
+}
+
 const moduleRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 export const root = resolve(process.env.TS_JODA_ROOT ?? moduleRoot);
 
@@ -36,16 +41,24 @@ export function rel(path: string): string {
     return relative(root, path).replaceAll('\\', '/');
 }
 
-export async function listFiles(dir: string): Promise<string[]> {
+export async function listFiles(
+    dir: string,
+    options: ListFilesOptions = {},
+): Promise<string[]> {
     const out: string[] = [];
 
-    for (const name of await readdir(dir)) {
-        const path = join(dir, name);
-        const info = await stat(path);
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+        const path = join(dir, entry.name);
 
-        if (info.isDirectory()) {
-            out.push(...await listFiles(path));
-        } else {
+        if (entry.isDirectory()) {
+            if (options.skipDirs?.has(entry.name) || options.skipDir?.(path)) {
+                continue;
+            }
+            out.push(...await listFiles(path, options));
+            continue;
+        }
+
+        if (entry.isFile() || entry.isSymbolicLink()) {
             out.push(path);
         }
     }
@@ -69,15 +82,22 @@ export function sha256(value: string): string {
     return createHash('sha256').update(value).digest('hex');
 }
 
-const generatedLocale = /^packages\/locale\/packages\/[^/]+\/package\.json$/u;
+const workspaceIgnoredDirs = new Set([
+    '.build', 'build', 'dist', 'node_modules', 'tmp',
+]);
+const generatedLocalesDir = 'packages/locale/packages';
+
+async function workspaceManifests(): Promise<string[]> {
+    return (await listFiles(fromRoot('packages'), {
+        skipDirs: workspaceIgnoredDirs,
+        skipDir: (path) => rel(path) === generatedLocalesDir,
+    }))
+        .filter((path) => path.endsWith('/package.json'))
+        .sort();
+}
 
 export async function workspaces(): Promise<Workspace[]> {
-    const manifests = (await listFiles(fromRoot('packages')))
-        .filter((path) => path.endsWith('/package.json'))
-        .filter((path) => !generatedLocale.test(rel(path)))
-        .sort();
-
-    return Promise.all(manifests.map(async (file) => ({
+    return Promise.all((await workspaceManifests()).map(async (file) => ({
         dir: dirname(file),
         file,
         manifest: await json<Manifest>(file),
