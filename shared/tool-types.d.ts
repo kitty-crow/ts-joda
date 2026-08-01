@@ -9,11 +9,13 @@ declare module 'rollup' {
         readonly banner?: string;
         readonly file?: string;
         readonly format?: 'amd' | 'cjs' | 'es' | 'iife' | 'system' | 'umd';
+        readonly globals?: Readonly<Record<string, string>>;
         readonly name?: string;
         readonly sourcemap?: boolean | 'inline' | 'hidden';
     }
 
     export interface RollupOptions {
+        readonly external?: readonly string[];
         readonly input?: string;
         readonly onwarn?: (...args: readonly unknown[]) => void;
         readonly output?: OutputOptions | readonly OutputOptions[];
@@ -29,6 +31,35 @@ declare module '@rollup/plugin-babel' {
     }
 
     export function babel(options: BabelOptions): Plugin;
+}
+
+declare module '@rollup/plugin-node-resolve' {
+    import type { Plugin } from 'rollup';
+    export function nodeResolve(): Plugin;
+}
+
+declare module '@rollup/plugin-commonjs' {
+    import type { Plugin } from 'rollup';
+    export default function commonjs(): Plugin;
+}
+
+declare module '@rollup/plugin-json' {
+    import type { Plugin } from 'rollup';
+    export default function json(): Plugin;
+}
+
+declare module '@rollup/plugin-replace' {
+    import type { Plugin } from 'rollup';
+    interface ReplaceOptions {
+        readonly preventAssignment?: boolean;
+        readonly [key: string]: string | boolean | undefined;
+    }
+    export default function replace(options: ReplaceOptions): Plugin;
+}
+
+declare module '@rollup/plugin-virtual' {
+    import type { Plugin } from 'rollup';
+    export default function virtual(modules: Readonly<Record<string, string>>): Plugin;
 }
 
 declare module 'rollup-plugin-minification' {
@@ -80,4 +111,22 @@ declare module 'karma' {
     export interface Config {
         set(options: ConfigOptions): void;
     }
+}
+
+declare module 'ejs' {
+    interface RenderData {
+        readonly [key: string]: unknown;
+    }
+    interface Ejs {
+        render(template: string, data: RenderData): string;
+    }
+    const ejs: Ejs;
+    export default ejs;
+}
+
+declare module 'cldr-data/availableLocales.json' {
+    const data: {
+        readonly availableLocales: readonly string[];
+    };
+    export default data;
 }
