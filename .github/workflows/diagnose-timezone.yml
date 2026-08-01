@@ -1,0 +1,53 @@
+name: Diagnose timezone staging
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+      - name: Inspect checkout
+        shell: bash
+        run: |
+          set -euxo pipefail
+          find packages/timezone/test -maxdepth 3 -type f -print | sort
+          find packages/timezone/data/unpacked -maxdepth 1 -type f -print | sort
+          grep -RIn 'tzdbTestUtils\|data/unpacked/latest' packages/timezone || true
+      - name: Install and bootstrap
+        shell: bash
+        run: |
+          set -euxo pipefail
+          npm install
+          npx lerna clean -y
+          npx lerna link
+          npx lerna bootstrap --no-ci
+      - name: Inspect bootstrapped tree
+        shell: bash
+        run: |
+          set -euxo pipefail
+          find packages/timezone/test -maxdepth 3 -type f -print | sort
+          find packages/timezone/data/unpacked -maxdepth 1 -type f -print | sort
+          grep -RIn 'tzdbTestUtils\|data/unpacked/latest' packages/timezone || true
+          cd packages/timezone
+          node -e "const p=require('node:path'); console.log(require.resolve('../data/unpacked/latest',{paths:[p.resolve('test')]}))"
+      - name: Inspect generated-source staging
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cd packages/timezone
+          npm run build-source
+          ../../node_modules/.bin/tsx ../../tools/src/commands/package-source.ts install
+          find test -maxdepth 3 -type f -print | sort
+          find data/unpacked -maxdepth 1 -type f -print | sort
+          grep -RIn 'tzdbTestUtils\|data/unpacked/latest' test data src || true
+          node -e "const p=require('node:path'); console.log(require.resolve('../data/unpacked/latest',{paths:[p.resolve('test')]}))"
+          ../../node_modules/.bin/tsx ../../tools/src/commands/package-source.ts clean
