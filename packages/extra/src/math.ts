@@ -4,8 +4,11 @@ interface MathOps {
     floorDiv(x: number, y: number): number;
     intDiv(x: number, y: number): number;
     intMod(x: number, y: number): number;
+    safeAdd(x: number, y: number): number;
     safeMultiply(x: number, y: number): number;
+    safeSubtract(x: number, y: number): number;
     safeToInt(value: number): number;
+    verifyInt(value: number): void;
 }
 
 interface CoreInternal {
