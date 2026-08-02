@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { babel } from '@rollup/plugin-babel';
+import terser from '@rollup/plugin-terser';
 import { sync as glob } from 'glob';
 import type { OutputOptions, Plugin, RollupOptions } from 'rollup';
-import { terser } from 'rollup-plugin-minification';
 
 export interface PackageIdentity {
     readonly name: string;
@@ -34,7 +34,7 @@ export function banner(pkg: PackageIdentity): string {
 export function standardPlugins(): StandardPlugins {
     return {
         babel: babel({ babelHelpers: 'bundled' }),
-        minify: terser({ output: { comments: /^!/u } }),
+        minify: terser({ format: { comments: /^!/u } }),
     };
 }
 
