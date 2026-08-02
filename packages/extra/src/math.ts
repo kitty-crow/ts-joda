@@ -1,6 +1,8 @@
 import * as core from '@js-joda/core';
 
 interface MathOps {
+    intDiv(x: number, y: number): number;
+    intMod(x: number, y: number): number;
     safeToInt(value: number): number;
 }
 
