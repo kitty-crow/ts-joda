@@ -155,3 +155,5 @@ jobs:
           name: strict-typescript-install-log
           path: ${{ runner.temp }}/npm-install.log
           if-no-files-found: ignore
+
+          # trigger archive migration
