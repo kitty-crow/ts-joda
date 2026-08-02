@@ -4,10 +4,12 @@
     "baseUrl": "../..",
     "declaration": false,
     "module": "ESNext",
+    "noEmit": false,
     "outDir": ".build/src",
     "paths": {
       "@js-joda/core": ["packages/core/typings/js-joda.d.ts"]
     },
+    "rewriteRelativeImportExtensions": true,
     "rootDir": "src",
     "sourceMap": false,
     "types": []
