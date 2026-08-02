@@ -18,7 +18,7 @@ export function assert(
     if (assertion) {
         return;
     }
-    if (error != null) {
+    if (error) {
         throw new error(msg);
     }
     throw new Error(msg);
@@ -49,7 +49,7 @@ export function requireInstance<T>(
         return value;
     }
 
-    const actual = value != null
+    const actual = value
         ? (value as { constructor?: { name?: string } }).constructor?.name
         : undefined;
     const suffix = actual ? `, but is ${actual}` : '';
