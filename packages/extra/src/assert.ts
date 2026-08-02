@@ -5,7 +5,11 @@
 import { IllegalArgumentException, NullPointerException } from '@js-joda/core';
 
 type ErrorType = new (message?: string) => Error;
-type Class<T> = (abstract new (...args: never[]) => T) & { readonly name: string };
+interface Class<T> {
+    readonly name: string;
+    readonly prototype: T;
+    [Symbol.hasInstance](value: unknown): boolean;
+}
 
 function className(value: unknown): string | undefined {
     if (!value) {
