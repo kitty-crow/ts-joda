@@ -38,7 +38,7 @@ export function requireNonNull<T>(value: T | null | undefined, parameterName: st
 /** @private */
 export function requireInstance<T>(value: unknown, type: Class<T>, parameterName: string): T {
     if (value instanceof type) {
-        return value;
+        return value as T;
     }
 
     const actual = className(value);
