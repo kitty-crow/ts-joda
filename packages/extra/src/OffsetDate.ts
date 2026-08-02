@@ -85,10 +85,7 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
     static of(...args: unknown[]): OffsetDate {
         switch (args.length) {
             case 2:
-                return OffsetDate._ofLocalDateZoneOffset(
-                    args[0] as LocalDate,
-                    args[1] as ZoneOffset,
-                );
+                return OffsetDate._ofLocalDateZoneOffset(args[0] as LocalDate, args[1] as ZoneOffset);
             case 4:
                 return OffsetDate._ofIntIntIntZoneOffset(
                     args[0] as number,
@@ -105,12 +102,7 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
         return new OffsetDate(date, offset);
     }
 
-    static _ofIntIntIntZoneOffset(
-        year: number,
-        month: number,
-        dayOfMonth: number,
-        offset: ZoneOffset,
-    ): OffsetDate {
+    static _ofIntIntIntZoneOffset(year: number, month: number, dayOfMonth: number, offset: ZoneOffset): OffsetDate {
         return new OffsetDate(LocalDate.of(year, month, dayOfMonth), offset);
     }
 
@@ -130,7 +122,7 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
         }
         const input = requireNonNull(temporal, 'temporal') as TemporalAccessor;
         try {
-            return new OffsetDate(LocalDate.from(input), ZoneOffset.from(input));
+            return new OffsetDate(LocalDate.from(input), ZoneOffset.from(input) as ZoneOffset);
         } catch (error) {
             const value = input as { readonly constructor: { readonly name: string } };
             throw new DateTimeException(
@@ -140,10 +132,7 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
         }
     }
 
-    static parse(
-        text: string,
-        formatter: DateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE,
-    ): OffsetDate {
+    static parse(text: string, formatter: DateTimeFormatter = DateTimeFormatter.ISO_OFFSET_DATE): OffsetDate {
         requireNonNull(formatter, 'formatter');
         return formatter.parse(text, type().FROM);
     }
@@ -155,22 +144,13 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
     }
 
     private _with(date: LocalDate, offset: ZoneOffset): OffsetDate {
-        if (this._date === date && this._offset.equals(offset)) {
-            return this;
-        }
-        return new OffsetDate(date, offset);
+        return this._date === date && this._offset.equals(offset) ? this : new OffsetDate(date, offset);
     }
 
     override isSupported(fieldOrUnit: TemporalField | TemporalUnit | null): boolean {
-        if (fieldOrUnit instanceof TemporalField) {
-            return this._isSupportedField(fieldOrUnit);
-        }
-        if (fieldOrUnit instanceof TemporalUnit) {
-            return this._isSupportedUnit(fieldOrUnit);
-        }
-        if (fieldOrUnit == null) {
-            return false;
-        }
+        if (fieldOrUnit instanceof TemporalField) return this._isSupportedField(fieldOrUnit);
+        if (fieldOrUnit instanceof TemporalUnit) return this._isSupportedUnit(fieldOrUnit);
+        if (fieldOrUnit == null) return false;
         const value = fieldOrUnit as { readonly constructor: { readonly name: string } };
         throw new IllegalArgumentException(
             `fieldOrUnit must be an instance of TemporalField or TemporalUnit, but is ${value.constructor.name}`,
@@ -178,17 +158,13 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
     }
 
     protected _isSupportedField(field: TemporalField): boolean {
-        if (field instanceof ChronoField) {
-            return field.isDateBased() || field === ChronoField.OFFSET_SECONDS;
-        }
-        return field.isSupportedBy(this);
+        return field instanceof ChronoField
+            ? field.isDateBased() || field === ChronoField.OFFSET_SECONDS
+            : field.isSupportedBy(this);
     }
 
     protected _isSupportedUnit(unit: TemporalUnit): boolean {
-        if (unit instanceof ChronoUnit) {
-            return unit.isDateBased();
-        }
-        return unit.isSupportedBy(this);
+        return unit instanceof ChronoUnit ? unit.isDateBased() : unit.isSupportedBy(this);
     }
 
     override range(field: TemporalField): ValueRange {
@@ -210,60 +186,25 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
         requireNonNull(field, 'field');
         requireInstance(field, TemporalField, 'field');
         if (field instanceof ChronoField) {
-            return field === ChronoField.OFFSET_SECONDS
-                ? this.offset().totalSeconds()
-                : this._date.getLong(field);
+            return field === ChronoField.OFFSET_SECONDS ? this.offset().totalSeconds() : this._date.getLong(field);
         }
         return field.getFrom(this);
     }
 
-    offset(): ZoneOffset {
-        return this._offset;
-    }
-
-    withOffsetSameLocal(offset: ZoneOffset): OffsetDate {
-        requireNonNull(offset, 'offset');
-        return this._with(this._date, offset);
-    }
-
-    toLocalDate(): LocalDate {
-        return this._date;
-    }
-
-    year(): number {
-        return this._date.year();
-    }
-
-    monthValue(): number {
-        return this._date.monthValue();
-    }
-
-    month(): Month {
-        return this._date.month();
-    }
-
-    dayOfMonth(): number {
-        return this._date.dayOfMonth();
-    }
-
-    dayOfYear(): number {
-        return this._date.dayOfYear();
-    }
-
-    dayOfWeek(): DayOfWeek {
-        return this._date.dayOfWeek();
-    }
+    offset(): ZoneOffset { return this._offset; }
+    withOffsetSameLocal(offset: ZoneOffset): OffsetDate { return this._with(this._date, requireNonNull(offset, 'offset')); }
+    toLocalDate(): LocalDate { return this._date; }
+    year(): number { return this._date.year(); }
+    monthValue(): number { return this._date.monthValue(); }
+    month(): Month { return this._date.month(); }
+    dayOfMonth(): number { return this._date.dayOfMonth(); }
+    dayOfYear(): number { return this._date.dayOfYear(); }
+    dayOfWeek(): DayOfWeek { return this._date.dayOfWeek(); }
 
     protected override _withAdjuster(adjuster: TemporalAdjuster): OffsetDate {
-        if (adjuster instanceof LocalDate) {
-            return this._with(adjuster, this._offset);
-        }
-        if (adjuster instanceof ZoneOffset) {
-            return this._with(this._date, adjuster);
-        }
-        if (adjuster instanceof OffsetDate) {
-            return adjuster;
-        }
+        if (adjuster instanceof LocalDate) return this._with(adjuster, this._offset);
+        if (adjuster instanceof ZoneOffset) return this._with(this._date, adjuster);
+        if (adjuster instanceof OffsetDate) return adjuster;
         return super._withAdjuster(adjuster) as OffsetDate;
     }
 
@@ -272,83 +213,38 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
         requireInstance(field, TemporalField, 'field');
         if (field instanceof ChronoField) {
             if (field === ChronoField.OFFSET_SECONDS) {
-                return this._with(
-                    this._date,
-                    ZoneOffset.ofTotalSeconds(field.checkValidIntValue(newValue)),
-                );
+                return this._with(this._date, ZoneOffset.ofTotalSeconds(field.checkValidIntValue(newValue)));
             }
             return this._with(this._date.with(field, newValue), this._offset);
         }
         return field.adjustInto(this, newValue) as OffsetDate;
     }
 
-    withYear(year: number): OffsetDate {
-        return this._with(this._date.withYear(year), this._offset);
-    }
-
-    withMonth(month: number): OffsetDate {
-        return this._with(this._date.withMonth(month), this._offset);
-    }
-
-    withDayOfMonth(dayOfMonth: number): OffsetDate {
-        return this._with(this._date.withDayOfMonth(dayOfMonth), this._offset);
-    }
-
-    withDayOfYear(dayOfYear: number): OffsetDate {
-        return this._with(this._date.withDayOfYear(dayOfYear), this._offset);
-    }
+    withYear(year: number): OffsetDate { return this._with(this._date.withYear(year), this._offset); }
+    withMonth(month: number): OffsetDate { return this._with(this._date.withMonth(month), this._offset); }
+    withDayOfMonth(dayOfMonth: number): OffsetDate { return this._with(this._date.withDayOfMonth(dayOfMonth), this._offset); }
+    withDayOfYear(dayOfYear: number): OffsetDate { return this._with(this._date.withDayOfYear(dayOfYear), this._offset); }
 
     protected override _plusUnit(amountToAdd: number, unit: TemporalUnit): OffsetDate {
-        if (unit instanceof ChronoUnit) {
-            return this._with(this._date.plus(amountToAdd, unit), this._offset);
-        }
+        if (unit instanceof ChronoUnit) return this._with(this._date.plus(amountToAdd, unit), this._offset);
         return unit.addTo(this, amountToAdd) as OffsetDate;
     }
 
-    plusYears(years: number): OffsetDate {
-        return this._with(this._date.plusYears(years), this._offset);
-    }
-
-    plusMonths(months: number): OffsetDate {
-        return this._with(this._date.plusMonths(months), this._offset);
-    }
-
-    plusWeeks(weeks: number): OffsetDate {
-        return this._with(this._date.plusWeeks(weeks), this._offset);
-    }
-
-    plusDays(days: number): OffsetDate {
-        return this._with(this._date.plusDays(days), this._offset);
-    }
-
-    minusYears(years: number): OffsetDate {
-        return this._with(this._date.minusYears(years), this._offset);
-    }
-
-    minusMonths(months: number): OffsetDate {
-        return this._with(this._date.minusMonths(months), this._offset);
-    }
-
-    minusWeeks(weeks: number): OffsetDate {
-        return this._with(this._date.minusWeeks(weeks), this._offset);
-    }
-
-    minusDays(days: number): OffsetDate {
-        return this._with(this._date.minusDays(days), this._offset);
-    }
+    plusYears(years: number): OffsetDate { return this._with(this._date.plusYears(years), this._offset); }
+    plusMonths(months: number): OffsetDate { return this._with(this._date.plusMonths(months), this._offset); }
+    plusWeeks(weeks: number): OffsetDate { return this._with(this._date.plusWeeks(weeks), this._offset); }
+    plusDays(days: number): OffsetDate { return this._with(this._date.plusDays(days), this._offset); }
+    minusYears(years: number): OffsetDate { return this._with(this._date.minusYears(years), this._offset); }
+    minusMonths(months: number): OffsetDate { return this._with(this._date.minusMonths(months), this._offset); }
+    minusWeeks(weeks: number): OffsetDate { return this._with(this._date.minusWeeks(weeks), this._offset); }
+    minusDays(days: number): OffsetDate { return this._with(this._date.minusDays(days), this._offset); }
 
     override query<R>(query: TemporalQuery<R>): R | null {
         requireNonNull(query, 'query');
         requireInstance(query, TemporalQuery, 'query');
-        if (query === TemporalQueries.chronology()) {
-            return ISO as unknown as R;
-        }
-        if (query === TemporalQueries.precision()) {
-            return ChronoUnit.DAYS as unknown as R;
-        }
-        if (query === TemporalQueries.offset() || query === TemporalQueries.zone()) {
-            return this.offset() as unknown as R;
-        }
+        if (query === TemporalQueries.chronology()) return ISO as unknown as R;
+        if (query === TemporalQueries.precision()) return ChronoUnit.DAYS as unknown as R;
+        if (query === TemporalQueries.offset() || query === TemporalQueries.zone()) return this.offset() as unknown as R;
         return super.query(query);
     }
 
@@ -362,79 +258,40 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
         const end = OffsetDate.from(endExclusive);
         if (unit instanceof ChronoUnit) {
             const offsetDiff = end._offset.totalSeconds() - this._offset.totalSeconds();
-            const endLocal = end._date.plusDays(
-                MathUtil.intDiv(-offsetDiff, SECONDS_PER_DAY),
-            );
-            return this._date.until(endLocal, unit);
+            return this._date.until(end._date.plusDays(MathUtil.intDiv(-offsetDiff, SECONDS_PER_DAY)), unit);
         }
         return unit.between(this, end);
     }
 
-    format(formatter: DateTimeFormatter): string {
-        requireNonNull(formatter, 'formatter');
-        return formatter.format(this);
-    }
-
-    atTime(time: LocalTime): OffsetDateTime {
-        return OffsetDateTime.of(this._date, time, this._offset);
-    }
+    format(formatter: DateTimeFormatter): string { return requireNonNull(formatter, 'formatter').format(this); }
+    atTime(time: LocalTime): OffsetDateTime { return OffsetDateTime.of(this._date, time, this._offset); }
 
     private _toEpochSecond(): number {
         return this._date.toEpochDay() * SECONDS_PER_DAY - this._offset.totalSeconds();
     }
 
     toEpochSecond(time: LocalTime): number {
-        requireNonNull(time, 'time');
-        return this._toEpochSecond() + time.toSecondOfDay();
+        return this._toEpochSecond() + requireNonNull(time, 'time').toSecondOfDay();
     }
 
     compareTo(other: OffsetDate): number {
         requireNonNull(other, 'other');
         requireInstance(other, OffsetDate, 'other');
-        if (this._offset.equals(other._offset)) {
-            return this._date.compareTo(other._date);
-        }
-        let compare = this._toEpochSecond() - other._toEpochSecond();
-        if (compare === 0) {
-            compare = this._date.compareTo(other._date);
-        }
-        return compare;
+        if (this._offset.equals(other._offset)) return this._date.compareTo(other._date);
+        const epoch = this._toEpochSecond() - other._toEpochSecond();
+        return epoch === 0 ? this._date.compareTo(other._date) : epoch;
     }
 
-    isAfter(other: OffsetDate): boolean {
-        requireNonNull(other, 'other');
-        requireInstance(other, OffsetDate, 'other');
-        return this._toEpochSecond() > other._toEpochSecond();
-    }
-
-    isBefore(other: OffsetDate): boolean {
-        requireNonNull(other, 'other');
-        requireInstance(other, OffsetDate, 'other');
-        return this._toEpochSecond() < other._toEpochSecond();
-    }
-
-    isEqual(other: OffsetDate): boolean {
-        requireNonNull(other, 'other');
-        requireInstance(other, OffsetDate, 'other');
-        return this._toEpochSecond() === other._toEpochSecond();
-    }
+    isAfter(other: OffsetDate): boolean { requireNonNull(other, 'other'); requireInstance(other, OffsetDate, 'other'); return this._toEpochSecond() > other._toEpochSecond(); }
+    isBefore(other: OffsetDate): boolean { requireNonNull(other, 'other'); requireInstance(other, OffsetDate, 'other'); return this._toEpochSecond() < other._toEpochSecond(); }
+    isEqual(other: OffsetDate): boolean { requireNonNull(other, 'other'); requireInstance(other, OffsetDate, 'other'); return this._toEpochSecond() === other._toEpochSecond(); }
 
     equals(obj: unknown): boolean {
-        if (this === obj) {
-            return true;
-        }
-        return obj instanceof OffsetDate
-            && this._date.equals(obj._date)
-            && this._offset.equals(obj._offset);
+        return this === obj || obj instanceof OffsetDate && this._date.equals(obj._date) && this._offset.equals(obj._offset);
     }
 
-    hashCode(): number {
-        return this._date.hashCode() ^ this._offset.hashCode();
-    }
-
-    override toString(): string {
-        return this._date.toString() + this._offset.toString();
-    }
+    hashCode(): number { return this._date.hashCode() ^ this._offset.hashCode(); }
+    override toString(): string { return this._date.toString() + this._offset.toString(); }
 }
 
 export function _init(): void {
@@ -444,10 +301,7 @@ export function _init(): void {
     offsetDate.FROM = createTemporalQuery('OffsetDate.FROM', (temporal) => OffsetDate.from(temporal));
 }
 
-function createTemporalQuery<R>(
-    name: string,
-    queryFrom: (temporal: TemporalAccessor) => R,
-): TemporalQuery<R> {
+function createTemporalQuery<R>(name: string, queryFrom: (temporal: TemporalAccessor) => R): TemporalQuery<R> {
     abstract class ExtendedTemporalQuery extends TemporalQuery<R> {}
     const Query = ExtendedTemporalQuery as unknown as QueryCtor<R>;
     Query.prototype.queryFrom = queryFrom;
