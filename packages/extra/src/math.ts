@@ -1,6 +1,7 @@
 import * as core from '@js-joda/core';
 
 interface MathOps {
+    floorDiv(x: number, y: number): number;
     intDiv(x: number, y: number): number;
     intMod(x: number, y: number): number;
     safeMultiply(x: number, y: number): number;
