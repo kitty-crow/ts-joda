@@ -1,10 +1,12 @@
 import { readdirSync } from 'node:fs';
-import { babel } from '@rollup/plugin-babel';
 import json from '@rollup/plugin-json';
 import replace from '@rollup/plugin-replace';
 import type { Plugin, RollupOptions } from 'rollup';
-import { terser } from 'rollup-plugin-minification';
-import { banner as packageBanner, merge } from '../../tools/src/build/rollup.ts';
+import {
+    banner as packageBanner,
+    merge,
+    standardPlugins,
+} from '../../tools/src/build/rollup.ts';
 import tzdb from './data/unpacked/latest.json' with { type: 'json' };
 import pkg from './package.json' with { type: 'json' };
 
@@ -19,9 +21,10 @@ function buildBanner(suffix = ''): string {
     return packageBanner({ name: pkg.name, version });
 }
 
+const standard = standardPlugins();
+
 export const plugins = {
-    babel: babel({ babelHelpers: 'bundled' }),
-    minify: terser({ output: { comments: /^!/u } }),
+    ...standard,
     json: json(),
     replace(suffix: string): Plugin {
         return replace({
