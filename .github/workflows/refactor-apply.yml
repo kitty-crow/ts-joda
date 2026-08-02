@@ -1,0 +1,70 @@
+name: Apply strict TypeScript refactor
+
+on:
+  push:
+    branches: [agent/strict-typescript-refactor]
+    paths: [.refactor/READY]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  BASE_SHA: 554068e7ff8797ba9e72d9e216761dc93c0b0bd1
+  ARCHIVE_SHA256: f24b13a8a1348274710eb007458786090058139f0858db9d039b3171c18c424f
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout staged archive
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Reconstruct clean repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .refactor/part-* | base64 --decode > /tmp/repo.tar.xz
+          echo "$ARCHIVE_SHA256  /tmp/repo.tar.xz" | sha256sum --check --strict
+          mkdir /tmp/repo
+          tar -xJf /tmp/repo.tar.xz -C /tmp/repo
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf -- {} +
+          cp -a /tmp/repo/. .
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        shell: bash
+        run: npm install --ignore-scripts --registry=https://registry.npmjs.org
+
+      - name: Audit dependencies
+        run: npm audit --audit-level=low
+
+      - name: Validate Node and ts-node
+        run: npm run check
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Validate Bun
+        shell: bash
+        run: |
+          npm run build:bun
+          bun -e "import { LocalDate } from './src/core/js-joda.ts'; if (LocalDate.of(2026, 8, 2).toString() !== '2026-08-02') process.exit(1)"
+
+      - name: Publish one refactor commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          tree=$(git write-tree)
+          commit=$(printf '%s\n' 'refactor: organise strict TypeScript repository' | git commit-tree "$tree" -p "$BASE_SHA")
+          git push --force origin "$commit:refs/heads/agent/strict-typescript-refactor"
