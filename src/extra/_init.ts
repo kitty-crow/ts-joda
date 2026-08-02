@@ -1,0 +1,36 @@
+/*
+ * @copyright (c) 2016, Philipp Thürwächter & Pattrick Hüper
+ * @license BSD-3-Clause (see LICENSE in the root directory of this source tree)
+ */
+
+import { _init as dayOfMonthInit } from './DayOfMonth.ts';
+import { _init as dayOfYearInit } from './DayOfYear.ts';
+import { _init as intervalInit } from './Interval.ts';
+import { _init as localDateRangeInit } from './LocalDateRange.ts';
+import { _init as offsetDateInit } from './OffsetDate.ts';
+import { _init as quarterInit } from './Quarter.ts';
+import { _init as temporalsInit } from './Temporals.ts';
+import { _init as yearQuarterInit } from './YearQuarter.ts';
+import { _init as yearWeekInit } from './YearWeek.ts';
+
+let isInit = false;
+
+function init(): void {
+    if (isInit) {
+        return;
+    }
+
+    isInit = true;
+
+    dayOfMonthInit();
+    dayOfYearInit();
+    intervalInit();
+    localDateRangeInit();
+    offsetDateInit();
+    quarterInit();
+    temporalsInit();
+    yearQuarterInit();
+    yearWeekInit();
+}
+
+init();

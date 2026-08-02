@@ -1,20 +1,9 @@
-# Node dependency directory
-node_modules
-
-# npm
-npm-debug.log
-yarn.lock
-
-# build output
-build
-dist
-tmp
-.nyc_output
-
-# Ide
-.idea
-*.iml
-
-*~
-
-.claude
+.build/
+node_modules/
+*.tgz
+packages/*/dist/
+packages/*/src/
+packages/*/typings/
+packages/*/README.md
+packages/*/LICENSE
+packages/locales/

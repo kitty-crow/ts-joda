@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": false,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@js-joda/core": [
+        "src/core/js-joda.ts"
+      ],
+      "@js-joda/extra": [
+        "src/extra/js-joda-extra.ts"
+      ],
+      "@js-joda/locale": [
+        "src/locale/js-joda-locale.ts"
+      ],
+      "@js-joda/timezone": [
+        "src/timezone/js-joda-timezone.ts"
+      ]
+    },
+    "resolveJsonModule": true,
+    "rewriteRelativeImportExtensions": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020",
+    "useDefineForClassFields": false,
+    "verbatimModuleSyntax": true
+  },
+  "include": [
+    "src/core/**/*.ts",
+    "src/extra/**/*.ts",
+    "src/locale/**/*.ts",
+    "src/timezone/**/*.ts"
+  ],
+  "exclude": [
+    "src/tools"
+  ]
+}

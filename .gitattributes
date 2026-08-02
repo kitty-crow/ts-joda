@@ -1,0 +1,2 @@
+* linguist-vendored
+src/**/*.ts -linguist-vendored linguist-language=TypeScript
