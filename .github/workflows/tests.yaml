@@ -36,6 +36,8 @@ jobs:
         shell: bash
         run: |
           mkdir -p build/deps
+          rm -rf node_modules packages/*/node_modules packages/locale/packages/*/node_modules
+          rm -f package-lock.json
           set -o pipefail
           npm install 2>&1 | tee build/deps/npm-install.log
       - name: Capture dependency report
