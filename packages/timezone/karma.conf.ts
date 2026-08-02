@@ -1,34 +1,19 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import type { Config, ConfigOptions } from 'karma';
+import { configureKarma } from '../../tools/src/build/karma.ts';
 import { testGlob } from '../../tools/src/build/rollup.ts';
 import { plugins } from './rollup.config.ts';
 
-export default function configure(config: Config): void {
-    const options: ConfigOptions = {
-        files: [{ pattern: 'test/rollup-index.js', watched: false }],
-        frameworks: ['mocha', 'chai'],
-        preprocessors: {
-            'test/rollup-index.js': ['rollup'],
-        },
-        rollupPreprocessor: {
-            plugins: [plugins.babel, plugins.json, nodeResolve(), testGlob()],
-            output: {
-                format: 'iife',
-                name: 'JSJodaTimezone',
-                sourcemap: 'inline',
-                globals: {
-                    chai: 'chai',
-                },
+export default configureKarma({
+    rollup: {
+        plugins: [plugins.babel, plugins.json, nodeResolve(), testGlob()],
+        output: {
+            format: 'iife',
+            name: 'JSJodaTimezone',
+            sourcemap: 'inline',
+            globals: {
+                chai: 'chai',
             },
-            external: ['chai'],
         },
-        browserDisconnectTimeout: 10_000,
-        browserNoActivityTimeout: 4 * 60 * 1_000,
-        captureTimeout: 4 * 60 * 1_000,
-        reporters: ['progress'],
-        browsers: ['ChromeHeadless', 'FirefoxHeadless'],
-        plugins: ['karma-*'],
-    };
-
-    config.set(options);
-}
+        external: ['chai'],
+    },
+});

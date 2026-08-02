@@ -1,9 +1,8 @@
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Config, ConfigOptions } from 'karma';
 import type { Plugin } from 'rollup';
-import { merge } from '../../tools/src/build/rollup.ts';
-import { testGlob } from '../../tools/src/build/rollup.ts';
+import { configureKarma } from '../../tools/src/build/karma.ts';
+import { merge, testGlob } from '../../tools/src/build/rollup.ts';
 import { buildRollupConfig } from './rollup-build-packages-config.ts';
 
 const dir = dirname(fileURLToPath(import.meta.url));
@@ -20,33 +19,17 @@ const sourceAlias: Plugin = {
 const base = buildRollupConfig({
     locales: ['en', 'en-GB', 'en-CA', 'de', 'fr'],
 });
-const rollupConfig = merge(base, {
-    plugins: [sourceAlias, ...(base.plugins ?? []), testGlob()],
-    output: {
-        format: 'iife',
-        sourcemap: 'inline',
-        globals: {
-            chai: 'chai',
+
+export default configureKarma({
+    rollup: merge(base, {
+        plugins: [sourceAlias, ...(base.plugins ?? []), testGlob()],
+        output: {
+            format: 'iife',
+            sourcemap: 'inline',
+            globals: {
+                chai: 'chai',
+            },
         },
-    },
-    external: ['chai'],
+        external: ['chai'],
+    }),
 });
-
-export default function configure(config: Config): void {
-    const options: ConfigOptions = {
-        files: [{ pattern: 'test/rollup-index.js' }],
-        frameworks: ['mocha', 'chai'],
-        preprocessors: {
-            'test/rollup-index.js': ['rollup'],
-        },
-        rollupPreprocessor: rollupConfig,
-        browserDisconnectTimeout: 10_000,
-        browserNoActivityTimeout: 4 * 60 * 1_000,
-        captureTimeout: 4 * 60 * 1_000,
-        reporters: ['progress'],
-        browsers: ['ChromeHeadless', 'FirefoxHeadless'],
-        plugins: ['karma-*'],
-    };
-
-    config.set(options);
-}
