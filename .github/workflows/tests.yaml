@@ -32,46 +32,45 @@ jobs:
           path: ~/.npm
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.OS }}-node-
-      - name: Install and bootstrap
+      - name: Install workspaces
         shell: bash
         run: |
           mkdir -p build/deps
           set -o pipefail
           npm install 2>&1 | tee build/deps/npm-install.log
-          npx lerna clean -y
-          npx lerna link
-          npx lerna bootstrap --no-ci
-      - name: Capture dependency baseline
+      - name: Capture dependency report
         run: npm run audit:deps
-      - name: Upload dependency baseline
+      - name: Upload dependency report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dependency-baseline
-          path: build/deps
+          name: dependency-report
+          path: |
+            build/deps
+            package-lock.json
           if-no-files-found: error
       - name: Check refactor compatibility
         run: npm run check:refactor
       - name: Build distributions
-        run: npx lerna run --stream build-dist
+        run: npm run build:dist
       - name: Build locale distributions
-        run: npx lerna run --stream build-locale-dist
+        run: npm run build:locale
       - name: Lint
-        run: npx lerna run --stream lint
+        run: npm run lint
       - name: Build API documentation
         run: npm run build-esdoc
       - name: Test core
-        run: npx lerna run --scope @js-joda/core --stream test
+        run: npm run test --workspace @js-joda/core
       - name: Test extra
-        run: npx lerna run --scope @js-joda/extra --stream test
+        run: npm run test --workspace @js-joda/extra
       - name: Test locale
-        run: npx lerna run --scope @js-joda/locale --stream test
+        run: npm run test --workspace @js-joda/locale
       - name: Test timezone
         shell: bash
         run: |
           mkdir -p build
           set -o pipefail
-          npx lerna run --scope @js-joda/timezone --stream test 2>&1 | tee build/timezone-test.log
+          npm run test --workspace @js-joda/timezone 2>&1 | tee build/timezone-test.log
       - name: Upload timezone test log
         if: always()
         uses: actions/upload-artifact@v4
@@ -80,11 +79,11 @@ jobs:
           path: build/timezone-test.log
           if-no-files-found: ignore
       - name: Test TypeScript declarations
-        run: npx lerna run --stream test-ts-definitions
+        run: npm run test:definitions
       - name: Generate package coverage
-        run: npx lerna run --stream test-coverage
+        run: npm run test:coverage
       - name: Run browser tests
-        run: npx lerna run --concurrency 1 --stream test-browser -- -- --browserNoActivityTimeout 20000
+        run: npm run test:browser
       - name: Build combined coverage report
         run: npm run build-test-coverage-report
       - name: Push coverage data to coveralls
