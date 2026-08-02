@@ -48,37 +48,39 @@ export class Interval {
         return new Interval(startInclusive, startInclusive.plus(duration));
     }
 
-    static parse(text: string): Interval {
-        requireNonNull(text, 'text');
-        if (typeof text !== 'string') {
-            throw new IllegalArgumentException(`text must be a string, but is ${text.constructor.name}`);
+    static parse(text: string): Interval;
+    static parse(text: unknown): Interval {
+        const input = requireNonNull(text, 'text');
+        if (typeof input !== 'string') {
+            const value = input as { readonly constructor: { readonly name: string } };
+            throw new IllegalArgumentException(`text must be a string, but is ${value.constructor.name}`);
         }
 
-        for (let i = 0; i < text.length; i += 1) {
-            if (text.charAt(i) !== '/') {
+        for (let i = 0; i < input.length; i += 1) {
+            if (input.charAt(i) !== '/') {
                 continue;
             }
 
-            const first = text.charAt(0);
+            const first = input.charAt(0);
             if (first === 'P' || first === 'p') {
-                const duration = Duration.parse(text.substring(0, i));
-                const end = ZonedDateTime.parse(text.substring(i + 1, text.length)).toInstant();
+                const duration = Duration.parse(input.substring(0, i));
+                const end = ZonedDateTime.parse(input.substring(i + 1, input.length)).toInstant();
                 return Interval.of(end.minus(duration), end);
             }
 
-            const start = ZonedDateTime.parse(text.substring(0, i)).toInstant();
-            if (i + 1 < text.length) {
-                const next = text.charAt(i + 1);
+            const start = ZonedDateTime.parse(input.substring(0, i)).toInstant();
+            if (i + 1 < input.length) {
+                const next = input.charAt(i + 1);
                 if (next === 'P' || next === 'p') {
-                    const duration = Duration.parse(text.substring(i + 1, text.length));
+                    const duration = Duration.parse(input.substring(i + 1, input.length));
                     return Interval.of(start, start.plus(duration));
                 }
             }
-            const end = ZonedDateTime.parse(text.substring(i + 1, text.length)).toInstant();
+            const end = ZonedDateTime.parse(input.substring(i + 1, input.length)).toInstant();
             return Interval.of(start, end);
         }
 
-        throw new DateTimeParseException('Interval cannot be parsed, no forward slash found', text, 0);
+        throw new DateTimeParseException('Interval cannot be parsed, no forward slash found', input, 0);
     }
 
     private constructor(startInclusive: Instant, endExclusive: Instant) {
