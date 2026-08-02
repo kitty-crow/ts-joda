@@ -26,6 +26,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Capture source snapshot
+        shell: bash
+        run: |
+          mkdir -p build/source
+          git archive --format=tar.gz --output=build/source/ts-joda.tar.gz HEAD
+      - name: Upload source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-snapshot
+          path: build/source/ts-joda.tar.gz
+          if-no-files-found: error
       - name: Setup node 24
         uses: actions/setup-node@v6
         with:
