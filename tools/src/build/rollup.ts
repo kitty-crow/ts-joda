@@ -121,7 +121,16 @@ export function testGlob(): Plugin {
                 return null;
             }
 
-            return glob(id, { cwd: process.cwd() })
+            return glob(id, {
+                cwd: process.cwd(),
+                ignore: [
+                    '**/node_modules/**',
+                    '**/.build/**',
+                    '**/build/**',
+                    '**/dist/**',
+                ],
+                nodir: true,
+            })
                 .map((file, index) => {
                     const path = join(process.cwd(), file);
                     return `import _${index} from ${JSON.stringify(path)}; export { _${index} };`;

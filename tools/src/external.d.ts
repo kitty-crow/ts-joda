@@ -78,6 +78,8 @@ declare module 'rollup-plugin-minification' {
 declare module 'glob' {
     interface GlobOptions {
         readonly cwd?: string;
+        readonly ignore?: readonly string[];
+        readonly nodir?: boolean;
     }
 
     export function sync(pattern: string, options?: GlobOptions): string[];
@@ -96,6 +98,7 @@ declare module 'karma' {
     }
 
     export interface ConfigOptions {
+        readonly basePath?: string;
         readonly files?: readonly (string | Pattern)[];
         readonly frameworks?: readonly string[];
         readonly preprocessors?: Readonly<Record<string, readonly string[]>>;

@@ -12,6 +12,7 @@ export function configureKarma(build: KarmaBuild): (config: Config) => void {
             ? undefined
             : { mocha: { timeout: build.mochaTimeout } };
         const options: ConfigOptions = {
+            basePath: process.cwd(),
             files: [{ pattern: 'test/rollup-index.js', watched: false }],
             frameworks: ['mocha', 'chai'],
             preprocessors: {
