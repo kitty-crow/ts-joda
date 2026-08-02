@@ -15,7 +15,7 @@ import { _init as yearWeekInit } from './YearWeek';
 
 let isInit = false;
 
-function init() {
+function init(): void {
     if (isInit) {
         return;
     }
