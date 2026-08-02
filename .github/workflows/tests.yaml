@@ -1,13 +1,157 @@
 name: js-joda build and test
 
 on:
+  push:
+    branches:
+      - agent/strict-typescript-refactor
+    paths:
+      - '.github/workflows/tests.yaml'
+      - '.refactor/ts-joda-strict-typescript.tar.gz'
   workflow_dispatch:
 
 permissions:
   contents: write
 
+concurrency:
+  group: apply-strict-typescript-archive
+  cancel-in-progress: false
+
+env:
+  ARCHIVE: .refactor/ts-joda-strict-typescript.tar.gz
+  ARCHIVE_SHA256: f3d4e86a62c030dad3da28d49c7845e8f32e9058a2343f12285fbc58981062e8
+
 jobs:
-  paused:
+  apply:
     runs-on: ubuntu-latest
     steps:
-      - run: echo 'Archive upload in progress.'
+      - name: Checkout staged branch
+        uses: actions/checkout@v6
+        with:
+          ref: agent/strict-typescript-refactor
+          fetch-depth: 0
+
+      - name: Verify and extract archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f "$ARCHIVE"
+          echo "$ARCHIVE_SHA256  $ARCHIVE" | sha256sum --check --strict
+
+          if tar -tzf "$ARCHIVE" | sed 's#^\./##' | grep -Eq '(^/|(^|/)\.\.(/|$))'; then
+            echo 'Archive contains an unsafe path.' >&2
+            exit 1
+          fi
+
+          if tar -tvzf "$ARCHIVE" | awk 'substr($1, 1, 1) == "l" || substr($1, 1, 1) == "h" { found = 1 } END { exit !found }'; then
+            echo 'Archive contains a symbolic or hard link.' >&2
+            exit 1
+          fi
+
+          repo="$RUNNER_TEMP/strict-typescript-repo"
+          rm -rf "$repo"
+          mkdir -p "$repo"
+          tar -xzf "$ARCHIVE" -C "$repo"
+
+          test -f "$repo/package.json"
+          test -d "$repo/src"
+          test -d "$repo/docs"
+
+          mapfile -t src_dirs < <(cd "$repo" && find . -type d -name src -print | sort)
+          mapfile -t docs_dirs < <(cd "$repo" && find . -type d -name docs -print | sort)
+          [[ ${#src_dirs[@]} -eq 1 && "${src_dirs[0]}" == './src' ]]
+          [[ ${#docs_dirs[@]} -eq 1 && "${docs_dirs[0]}" == './docs' ]]
+
+          bad=$(find "$repo" -type f \( -iname '*.js' -o -iname '*.mjs' -o -iname '*.cjs' -o -iname '*.jsx' -o -iname '*.html' -o -iname '*.htm' \) -print -quit)
+          test -z "$bad"
+          bad_docs=$(find "$repo/docs" -type f ! -name '*.md' -print -quit)
+          test -z "$bad_docs"
+          test "$(find "$repo" -type f -name '*.ts' | wc -l)" -gt 0
+
+      - name: Replace repository tree
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$RUNNER_TEMP/strict-typescript-repo"
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf -- {} +
+          cp -a "$repo"/. .
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies and create lockfile
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --ignore-scripts --registry=https://registry.npmjs.org 2>&1 | tee "$RUNNER_TEMP/npm-install.log"
+          if grep -Eiq '(^|[^[:alpha:]])deprecated([^[:alpha:]]|$)' "$RUNNER_TEMP/npm-install.log"; then
+            echo 'Deprecated dependency or install warning detected.' >&2
+            exit 1
+          fi
+          test -f package-lock.json
+
+      - name: Audit dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm audit --audit-level=low
+          npm audit --omit=dev --audit-level=low
+
+      - name: Validate npm and ts-node
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run check
+          npm run build:ts-node
+          npm pack --workspaces --if-present --dry-run
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Validate Bun
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build:bun
+          bun -e "import { LocalDate } from './src/core/js-joda.ts'; if (LocalDate.of(2026, 8, 2).toString() !== '2026-08-02') process.exit(1)"
+
+      - name: Publish one clean refactor commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf \
+            node_modules \
+            .build \
+            packages/locales \
+            packages/*/dist \
+            packages/*/src \
+            packages/*/typings \
+            packages/*/*.tgz \
+            packages/*/README.md \
+            packages/*/LICENSE
+
+          git add -A
+
+          if git ls-files | grep -E '\.(js|mjs|cjs|jsx|html|htm)$'; then
+            echo 'Forbidden JavaScript or HTML remains in the clean tree.' >&2
+            exit 1
+          fi
+
+          git fetch origin main
+          base=$(git rev-parse origin/main)
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          tree=$(git write-tree)
+          commit=$(printf '%s\n' 'refactor: rebuild repository as strict TypeScript' | git commit-tree "$tree" -p "$base")
+          git push --force origin "$commit:refs/heads/agent/strict-typescript-refactor"
+          echo "Published $commit"
+
+      - name: Upload install log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strict-typescript-install-log
+          path: ${{ runner.temp }}/npm-install.log
+          if-no-files-found: ignore
