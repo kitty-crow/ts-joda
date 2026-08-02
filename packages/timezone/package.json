@@ -24,7 +24,7 @@
     "transform-data": "tsx transform-data.ts",
     "lint": "npx eslint .",
     "build-source": "tsc -p tsconfig.json",
-    "with-source": "NODE_OPTIONS='--import tsx' tsx ../../tools/src/commands/source-run.ts",
+    "with-source": "tsx ../../tools/src/commands/source-run.ts",
     "prepack": "npm run build-source && tsx ../../tools/src/commands/package-source.ts install",
     "postpack": "tsx ../../tools/src/commands/package-source.ts clean"
   },
