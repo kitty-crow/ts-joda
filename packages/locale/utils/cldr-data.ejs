@@ -1,7 +1,7 @@
 import { registerLocaleData } from '@js-joda/locale';
 <% locales.forEach(function(locale){ -%>
-import  <%- locale.replace(/-/g, '_') _%>_cg from 'cldr-data/main/<%- locale %>/ca-gregorian.json';
-import  <%- locale.replace(/-/g, '_') _%>_tzn from 'cldr-data/main/<%- locale %>/timeZoneNames.json';
+import  <%- locale.replace(/-/g, '_') _%>_cg from 'cldr-dates-full/main/<%- locale %>/ca-gregorian.json';
+import  <%- locale.replace(/-/g, '_') _%>_tzn from 'cldr-dates-full/main/<%- locale %>/timeZoneNames.json';
 <% }); -%>
 
 <% locales.forEach(function(locale){ -%>

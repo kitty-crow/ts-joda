@@ -129,13 +129,6 @@ declare module 'ejs' {
     export default ejs;
 }
 
-declare module 'cldr-data/availableLocales.json' {
-    const data: {
-        readonly availableLocales: readonly string[];
-    };
-    export default data;
-}
-
 declare module 'moment-timezone/moment-timezone-utils' {
     const moment: unknown;
     export default moment;

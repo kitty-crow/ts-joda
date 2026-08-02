@@ -4,7 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import virtual from '@rollup/plugin-virtual';
 import type { RollupOptions } from 'rollup';
 import { merge as mergeConfig } from '../../tools/src/build/rollup.ts';
-import { defaultConfig, plugins } from './rollup.config.ts';
+import { cldrBuildData, defaultConfig, plugins } from './rollup.config.ts';
 import renderCldrDataLoader from './utils/clrdr-data-render.ts';
 
 export type LocalePackages = Readonly<Record<string, readonly string[]>>;
@@ -19,6 +19,7 @@ export function buildRollupConfig(options: { readonly locales: readonly string[]
     return mergeConfig(defaultConfig, {
         plugins: [
             plugins.babel,
+            cldrBuildData,
             virtual({ 'cldr-entry': source }),
             json(),
             nodeResolve(),

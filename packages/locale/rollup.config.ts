@@ -1,7 +1,8 @@
+import { createRequire } from 'node:module';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import type { RollupOptions } from 'rollup';
+import type { Plugin, RollupOptions } from 'rollup';
 import {
     banner,
     merge,
@@ -9,11 +10,24 @@ import {
 } from '../../tools/src/build/rollup.ts';
 import pkg from './package.json' with { type: 'json' };
 
+const require = createRequire(import.meta.url);
+const prefix = 'cldr-data/supplemental/';
+
+export const cldrBuildData: Plugin = {
+    name: 'cldr-build-data',
+    resolveId(id: string): string | null {
+        if (!id.startsWith(prefix)) {
+            return null;
+        }
+        return require.resolve(`cldr-core/supplemental/${id.slice(prefix.length)}`);
+    },
+};
+
 export const plugins = standardPlugins();
 
 export const defaultConfig = {
     input: './src/js-joda-locale.js',
-    plugins: [nodeResolve(), commonjs(), json(), plugins.babel],
+    plugins: [cldrBuildData, nodeResolve(), commonjs(), json(), plugins.babel],
     output: {
         banner: banner(pkg),
         globals: {
@@ -42,7 +56,7 @@ const configs: RollupOptions[] = [
         },
     }),
     merge(defaultConfig, {
-        plugins: [nodeResolve(), commonjs(), json(), plugins.babel, plugins.minify],
+        plugins: [cldrBuildData, nodeResolve(), commonjs(), json(), plugins.babel, plugins.minify],
         output: {
             file: 'dist/js-joda-locale.min.js',
             format: 'iife',
