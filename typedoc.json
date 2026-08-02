@@ -34,6 +34,7 @@
     "Repository": "https://github.com/js-joda/js-joda"
   },
   "packageOptions": {
+    "tsconfig": "../../tsconfig.docs.json",
     "entryPoints": [
       "typings/*.d.ts"
     ],
@@ -41,12 +42,6 @@
     "alwaysCreateEntryPointModule": true,
     "readme": "README.md",
     "disableSources": true,
-    "suppressCommentWarningsInDeclarationFiles": true,
-    "compilerOptions": {
-      "module": "ESNext",
-      "moduleResolution": "Bundler",
-      "target": "ES2022",
-      "skipLibCheck": true
-    }
+    "suppressCommentWarningsInDeclarationFiles": true
   }
 }

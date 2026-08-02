@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rewriteRelativeImportExtensions": false,
+    "types": []
+  },
+  "files": [
+    "packages/core/typings/js-joda.d.ts",
+    "packages/extra/typings/js-joda-extra.d.ts",
+    "packages/locale/typings/js-joda-locale.d.ts",
+    "packages/timezone/typings/js-joda-timezone.d.ts"
+  ]
+}

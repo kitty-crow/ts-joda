@@ -16,7 +16,7 @@ Especially this implements patterns elements to print and parse locale specific 
 
 ### Usage ###
 
-also see examples in  [examples folder](examples/)
+also see the [Node usage example](examples/usage_node.js)
 
 ### Use prebuilt locale packages
 
@@ -183,7 +183,7 @@ see the [browser example](examples/usage_browser.html) and [custom build example
 
 ### Bundling with rollup, minimizing package size
 
-[rollup-examples.config.js](rollup-examples.config.js) is a good starting point to see how we bundle packages
+[rollup-examples.config.ts](rollup-examples.config.ts) is a good starting point to see how we bundle packages
 and minimize package size with rollup. It shows how to build a self-contained bundle that includes only the
 locale data you need by importing specific prebuilt locale packages.
 
