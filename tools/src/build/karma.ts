@@ -1,5 +1,6 @@
 import type { Config, ConfigOptions } from 'karma';
 import type { RollupOptions } from 'rollup';
+import { fromRoot } from '../repo.ts';
 
 export interface KarmaBuild {
     readonly rollup: RollupOptions;
@@ -13,8 +14,11 @@ export function configureKarma(build: KarmaBuild): (config: Config) => void {
             : { mocha: { timeout: build.mochaTimeout } };
         const options: ConfigOptions = {
             basePath: process.cwd(),
-            files: [{ pattern: 'test/rollup-index.js', watched: false }],
-            frameworks: ['mocha', 'chai'],
+            files: [
+                { pattern: fromRoot('node_modules/chai/chai.js'), watched: false },
+                { pattern: 'test/rollup-index.js', watched: false },
+            ],
+            frameworks: ['mocha'],
             preprocessors: {
                 'test/rollup-index.js': ['rollup'],
             },
