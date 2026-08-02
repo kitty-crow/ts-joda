@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.tools.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node10",
+    "noEmit": true,
+    "rewriteRelativeImportExtensions": false,
+    "verbatimModuleSyntax": false
+  },
+  "ts-node": {
+    "moduleTypes": {
+      "src/tools/**/*.ts": "cjs"
+    }
+  }
+}

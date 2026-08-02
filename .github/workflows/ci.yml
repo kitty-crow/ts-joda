@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches: [main, agent/strict-typescript-refactor]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run audit
+      - run: npm run check
+        env:
+          NODE_OPTIONS: --throw-deprecation
+      - name: Dry-run package tarballs
+        run: npm pack --workspaces --if-present --dry-run --ignore-scripts
+
+  bun:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+      - run: npm ci
+      - run: npm run build:bun
+      - run: bun -e "import { LocalDate } from './src/core/js-joda.ts'; if (LocalDate.of(2026, 8, 2).toString() !== '2026-08-02') process.exit(1)"
