@@ -16,7 +16,7 @@
   "scripts": {
     "prepublishOnly": "npm run build-dist",
     "test": "npm run build-source && NODE_ENV=test npm run with-source -- npx mocha --timeout 5000 --require @babel/register ./test/*Test.js ./test/**/*Test.js",
-    "test-coverage": "npm run build-source && NODE_ENV=test COVERAGE=1 npm run with-source -- npx nyc --report-dir=build/coverage --reporter=lcov --reporter html npx mocha --timeout 5000 --require @babel/register --reporter progress ./test/*Test.js ./test/**/*Test.js ./test/**/**/*Test.js",
+    "test-coverage": "npm run build-source && NODE_ENV=test npm run with-source -- npx c8 --temp-directory ../../.c8_output --clean=false --report-dir=build/coverage --reporter=lcov --reporter=html npx mocha --timeout 5000 --require @babel/register --reporter progress ./test/*Test.js ./test/**/*Test.js ./test/**/**/*Test.js",
     "test-browser": "npm run build-source && npm run with-source -- tsx ../../tools/src/commands/karma-run.ts --reporters=dots --single-run",
     "test-ts-definitions": "TS_NODE_PROJECT='../../shared/ts-test-config.json' NODE_ENV=test mocha --timeout 5000 --require ts-node/register ./test/typescript_definitions/*.ts",
     "test-ci": "npm run build-dist && npm run test && npm run test-browser && npm run test-ts-definitions && npm run test-coverage",
@@ -37,10 +37,6 @@
     "time",
     "timezone"
   ],
-  "nyc": {
-    "sourceMap": false,
-    "instrument": false
-  },
   "author": "pithu",
   "contributors": [
     "pithu",

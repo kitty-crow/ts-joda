@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-mkdir -p ./.nyc_output
-rm ./.nyc_output/*
-cp ./packages/**/.nyc_output/*.json ./.nyc_output
-NODE_ENV=test COVERAGE=1 npx nyc report --report-dir=build/coverage --reporter=lcov --reporter html
+npx c8 report \
+  --temp-directory .c8_output \
+  --report-dir build/coverage \
+  --reporter=lcov \
+  --reporter=html

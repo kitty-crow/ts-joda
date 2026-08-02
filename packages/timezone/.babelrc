@@ -13,11 +13,7 @@
   "comments": false,
   "env": {
     "test": {
-      "presets": ["@babel/preset-env", {
-        "plugins": [
-          "istanbul"
-        ]
-      }]
+      "presets": ["@babel/preset-env"]
     }
   }
 }
