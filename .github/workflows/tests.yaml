@@ -33,11 +33,23 @@ jobs:
           key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.OS }}-node-
       - name: Install and bootstrap
+        shell: bash
         run: |
-          npm install;
-          npx lerna clean -y;
-          npx lerna link;
-          npx lerna bootstrap --no-ci;
+          mkdir -p build/deps
+          set -o pipefail
+          npm install 2>&1 | tee build/deps/npm-install.log
+          npx lerna clean -y
+          npx lerna link
+          npx lerna bootstrap --no-ci
+      - name: Capture dependency baseline
+        run: npm run audit:deps
+      - name: Upload dependency baseline
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-baseline
+          path: build/deps
+          if-no-files-found: error
       - name: Check refactor compatibility
         run: npm run check:refactor
       - name: Build distributions
@@ -81,16 +93,3 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           path-to-lcov: ./build/coverage/lcov.info
-
-
-#  dump-env:
-#    name: Dump environment and context
-#    runs-on: ubuntu-latest
-#    if: ${{ false }}
-#    steps:
-#      - name: dump github context
-#        env:
-#          GITUB_CONTEXT: ${{ toJson(github) }}
-#        run: echo "$GITUB_CONTEXT"
-#      - name: dump default env
-#        run: export
