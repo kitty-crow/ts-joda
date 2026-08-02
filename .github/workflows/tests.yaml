@@ -1,90 +1,13 @@
 name: js-joda build and test
 
 on:
-  push:
-    branches:
-      - agent/strict-typescript-refactor
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 permissions:
   contents: write
 
-concurrency:
-  group: strict-typescript-refactor
-  cancel-in-progress: true
-
-env:
-  BASE_SHA: 554068e7ff8797ba9e72d9e216761dc93c0b0bd1
-  ARCHIVE_SHA256: f24b13a8a1348274710eb007458786090058139f0858db9d039b3171c18c424f
-
 jobs:
-  validate-and-publish:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+  paused:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout staged refactor
-        uses: actions/checkout@v6
-        with:
-          ref: agent/strict-typescript-refactor
-          fetch-depth: 0
-
-      - name: Reconstruct clean repository
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat .refactor/v2-0? | base64 --decode > /tmp/repo.tar.xz
-          echo "$ARCHIVE_SHA256  /tmp/repo.tar.xz" | sha256sum --check --strict
-          mkdir /tmp/repo
-          tar -xJf /tmp/repo.tar.xz -C /tmp/repo
-          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf -- {} +
-          cp -a /tmp/repo/. .
-
-      - name: Set up Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24'
-          registry-url: https://registry.npmjs.org
-
-      - name: Install dependencies
-        shell: bash
-        run: |
-          set -euo pipefail
-          npm install --ignore-scripts --registry=https://registry.npmjs.org 2>&1 | tee /tmp/npm-install.log
-          if grep -Eiq '(^|[^[:alpha:]])deprecated([^[:alpha:]]|$)' /tmp/npm-install.log; then
-            echo 'Deprecated dependency or install warning detected.' >&2
-            exit 1
-          fi
-
-      - name: Audit dependencies
-        shell: bash
-        run: |
-          npm audit --audit-level=low
-          npm audit --omit=dev --audit-level=low
-
-      - name: Validate npm and ts-node
-        shell: bash
-        run: |
-          npm run check
-          npm run build:ts-node
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2
-
-      - name: Validate Bun
-        shell: bash
-        run: |
-          npm run build:bun
-          bun -e "import { LocalDate } from './src/core/js-joda.ts'; if (LocalDate.of(2026, 8, 2).toString() !== '2026-08-02') process.exit(1)"
-
-      - name: Publish one refactor commit
-        if: github.event_name == 'push'
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf node_modules .build packages/*/dist packages/*/src packages/*/typings packages/*/*.tgz
-          git add -A
-          tree=$(git write-tree)
-          commit=$(printf '%s\n' 'refactor: organise strict TypeScript repository' | git commit-tree "$tree" -p "$BASE_SHA")
-          git push --force origin "$commit:refs/heads/agent/strict-typescript-refactor"
+      - run: echo 'Archive upload in progress.'
