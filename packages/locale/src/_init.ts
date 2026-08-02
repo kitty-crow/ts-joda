@@ -9,8 +9,7 @@ import { _init as dateTimeFormatterInit } from './format/LocaleDateTimeFormatter
 
 let isInit = false;
 
-function init() {
-    /* istanbul ignore if */
+function init(): void {
     if (isInit) {
         return;
     }

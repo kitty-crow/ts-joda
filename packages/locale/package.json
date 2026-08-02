@@ -29,17 +29,21 @@
   "scripts": {
     "prepublishOnly": "npm run build-dist && npm run build-locale-dist",
     "build-cldr": "tsx ../../tools/src/commands/cldr-stage.ts",
-    "test": "npm run build-cldr && NODE_PATH='../../.build/node_modules' NODE_ENV=test npx mocha --timeout 5000 --require @babel/register ./test/*Test.js ./test/**/*Test.js ./test/**/**/*Test.js test/pluginTest_mochaOnly.js",
-    "test-coverage": "npm run build-cldr && NODE_PATH='../../.build/node_modules' NODE_ENV=test npx c8 --temp-directory ../../.c8_output --clean=false --report-dir=build/coverage --reporter=lcov --reporter=html npx mocha --timeout 5000 --require @babel/register --reporter progress ./test/*Test.js ./test/**/*Test.js ./test/**/**/*Test.js",
-    "test-browser": "tsx ../../tools/src/commands/karma-run.ts --reporters=dots --single-run",
+    "test": "npm run build-source && npm run build-cldr && NODE_PATH='../../.build/node_modules' NODE_ENV=test npm run with-source -- npx mocha --timeout 5000 --require @babel/register ./test/*Test.js ./test/**/*Test.js ./test/**/**/*Test.js test/pluginTest_mochaOnly.js",
+    "test-coverage": "npm run build-source && npm run build-cldr && NODE_PATH='../../.build/node_modules' NODE_ENV=test npm run with-source -- npx c8 --temp-directory ../../.c8_output --clean=false --report-dir=build/coverage --reporter=lcov --reporter=html npx mocha --timeout 5000 --require @babel/register --reporter progress ./test/*Test.js ./test/**/*Test.js ./test/**/**/*Test.js",
+    "test-browser": "npm run build-source && npm run with-source -- tsx ../../tools/src/commands/karma-run.ts --reporters=dots --single-run",
     "test-ts-definitions": "TS_NODE_PROJECT='../../shared/ts-test-config.json' NODE_ENV=test mocha --timeout 5000 --require ts-node/register ./test/typescript_definitions/*.ts",
     "test-ci": "npm run build-dist && npm run build-locale-dist && npm run test && npm run test-browser && npm run test-ts-definitions && npm run test-coverage",
-    "build-dist": "NODE_OPTIONS='--import tsx' npx rollup -c rollup.config.ts",
-    "build-examples": "NODE_OPTIONS='--import tsx' npx rollup -c rollup-examples.config.ts",
-    "build-prebuilt": "rm -rf dist/prebuilt/*; NODE_OPTIONS='--import tsx' npx rollup -c rollup-prebuilt.config.ts",
+    "build-dist": "npm run build-source && NODE_OPTIONS='--import tsx' npm run with-source -- npx rollup -c rollup.config.ts",
+    "build-examples": "npm run build-source && NODE_OPTIONS='--import tsx' npm run with-source -- npx rollup -c rollup-examples.config.ts",
+    "build-prebuilt": "rm -rf dist/prebuilt/*; npm run build-source && NODE_OPTIONS='--import tsx' npm run with-source -- npx rollup -c rollup-prebuilt.config.ts",
     "build-locale-dist": "npm run build-examples && npm run build-prebuilt && npm run create-packages",
     "create-packages": "rm -rf packages/*; tsx utils/create_packages.ts",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "build-source": "tsc -p tsconfig.json",
+    "with-source": "tsx ../../tools/src/commands/source-run.ts",
+    "prepack": "npm run build-source && tsx ../../tools/src/commands/package-source.ts install",
+    "postpack": "tsx ../../tools/src/commands/package-source.ts clean"
   },
   "keywords": [
     "date",

@@ -14,5 +14,5 @@ use(plug);
 export {
     Locale,
     WeekFields,
-    registerLocaleData
+    registerLocaleData,
 };
