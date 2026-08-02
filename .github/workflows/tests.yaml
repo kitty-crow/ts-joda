@@ -55,7 +55,18 @@ jobs:
       - name: Test locale
         run: npx lerna run --scope @js-joda/locale --stream test
       - name: Test timezone
-        run: npx lerna run --scope @js-joda/timezone --stream test
+        shell: bash
+        run: |
+          mkdir -p build
+          set -o pipefail
+          npx lerna run --scope @js-joda/timezone --stream test 2>&1 | tee build/timezone-test.log
+      - name: Upload timezone test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: timezone-test-log
+          path: build/timezone-test.log
+          if-no-files-found: ignore
       - name: Test TypeScript declarations
         run: npx lerna run --stream test-ts-definitions
       - name: Generate package coverage
