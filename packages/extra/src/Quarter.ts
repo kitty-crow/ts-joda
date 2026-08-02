@@ -47,7 +47,7 @@ export class Quarter extends TemporalAccessor implements TemporalAdjuster {
     private readonly _value: number;
     private readonly _name: string;
 
-    static valueOf(name: string): Quarter {
+    static override valueOf(name: string): Quarter {
         requireNonNull(name, 'name');
         switch (name) {
             case 'Q1':
