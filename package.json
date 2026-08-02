@@ -1,5 +1,10 @@
 {
   "name": "@js-joda/root",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "packages/locale/packages/*"
+  ],
   "description": "a date and time library for javascript",
   "repository": {
     "type": "git",
@@ -15,20 +20,16 @@
   "bugs": {
     "url": "https://github.com/js-joda/js-joda/issues"
   },
-  "changelog": {
-    "labels": {
-      "breaking": ":boom: Breaking Change",
-      "enhancement": ":rocket: Enhancement",
-      "bug": ":bug: Bug Fix",
-      "documentation": ":memo: Documentation",
-      "internal": ":house: Internal",
-      "dependencies": ":house: Dependency update"
-    }
-  },
   "scripts": {
     "postpublish": "npm run build-esdoc && ./shared/git-push-docs-on-change.sh",
     "build-esdoc": "tsx tools/src/commands/docs.ts",
     "build-test-coverage-report": "./shared/build-test-coverage-report.sh",
+    "build:dist": "npm run build-dist --workspaces --if-present",
+    "build:locale": "npm run build-locale-dist --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test:definitions": "npm run test-ts-definitions --workspaces --if-present",
+    "test:coverage": "npm run test-coverage --workspaces --if-present",
+    "test:browser": "npm run test-browser --workspaces --if-present -- --browserNoActivityTimeout 20000",
     "audit:source": "tsx tools/src/commands/inventory.ts",
     "audit:deps": "tsx tools/src/commands/deps.ts",
     "api:capture": "tsx tools/src/commands/api-capture.ts",
@@ -73,8 +74,6 @@
     "karma-mocha": "^2.0.1",
     "karma-rollup-preprocessor": "^7.0.8",
     "karma-sourcemap-loader": "^0.4.0",
-    "lerna": "^6.6.2",
-    "lerna-changelog": "^2.2.0",
     "markdown-toc": "^1.2.0",
     "mocha": "^11.7.5",
     "moment-timezone": "^0.6.1",
