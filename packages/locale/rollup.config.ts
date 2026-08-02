@@ -1,17 +1,15 @@
-import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import type { Plugin, RollupOptions } from 'rollup';
-import { terser } from 'rollup-plugin-minification';
-import { merge } from '../../tools/src/build/rollup.ts';
-import { banner } from '../../tools/src/build/rollup.ts';
+import type { RollupOptions } from 'rollup';
+import {
+    banner,
+    merge,
+    standardPlugins,
+} from '../../tools/src/build/rollup.ts';
 import pkg from './package.json' with { type: 'json' };
 
-export const plugins = {
-    babel: babel({ babelHelpers: 'bundled' }),
-    minify: terser({ output: { comments: /^!/u } }),
-} satisfies Record<string, Plugin>;
+export const plugins = standardPlugins();
 
 export const defaultConfig = {
     input: './src/js-joda-locale.js',
