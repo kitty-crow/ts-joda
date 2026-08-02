@@ -48,8 +48,14 @@ jobs:
         run: npx lerna run --stream lint
       - name: Build API documentation
         run: npm run build-esdoc
-      - name: Run unit tests
-        run: npx lerna run --stream test
+      - name: Test core
+        run: npx lerna run --scope @js-joda/core --stream test
+      - name: Test extra
+        run: npx lerna run --scope @js-joda/extra --stream test
+      - name: Test locale
+        run: npx lerna run --scope @js-joda/locale --stream test
+      - name: Test timezone
+        run: npx lerna run --scope @js-joda/timezone --stream test
       - name: Test TypeScript declarations
         run: npx lerna run --stream test-ts-definitions
       - name: Generate package coverage
