@@ -15,5 +15,5 @@
     "sourceMap": false,
     "types": []
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "cldrjs.d.ts"]
 }

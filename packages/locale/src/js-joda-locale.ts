@@ -4,7 +4,9 @@
  */
 import { use } from '@js-joda/core';
 import plug from './plug';
+// @ts-expect-error Legacy JS module awaiting TypeScript migration.
 import Locale from './Locale';
+// @ts-expect-error Legacy JS module awaiting TypeScript migration.
 import { WeekFields } from './temporal/WeekFields';
 import { registerLocaleData } from './format/cldr/CldrCache';
 import './supplemental-data';

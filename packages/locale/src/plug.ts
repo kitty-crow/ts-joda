@@ -3,7 +3,11 @@
  * @license BSD-3-Clause (see LICENSE.md in the root directory of this source tree)
  */
 
+/* eslint-disable no-param-reassign */
+
+// @ts-expect-error Legacy JS module awaiting TypeScript migration.
 import CldrDateTimeFormatterBuilder from './format/cldr/CldrDateTimeFormatterBuilder';
+// @ts-expect-error Legacy JS module awaiting TypeScript migration.
 import LocaleDateTimeFormatter from './format/LocaleDateTimeFormatter';
 
 import './_init';
