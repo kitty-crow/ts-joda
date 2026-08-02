@@ -32,7 +32,13 @@ const base = {
     plugins: {
         '@stylistic': stylistic,
     },
-    rules: style,
+};
+
+const unused = {
+    args: 'after-used',
+    argsIgnorePattern: '^_',
+    caughtErrors: 'none',
+    ignoreRestSiblings: true,
 };
 
 export default tseslint.config(
@@ -42,7 +48,14 @@ export default tseslint.config(
             '**/.build/**',
             '**/build/**',
             '**/dist/**',
+            '**/tmp/**',
+            '**/*.d.ts',
+            '**/*.flow.js',
+            '**/typings/**',
+            '**/test/typescript_definitions/**',
+            '**/examples/**',
             'docs/**',
+            'packages/core/benchmark/node_modules/**',
             'packages/locale/packages/**',
         ],
     },
@@ -50,6 +63,14 @@ export default tseslint.config(
         files: ['**/*.{js,cjs,mjs}'],
         extends: [js.configs.recommended],
         ...base,
+        linterOptions: {
+            reportUnusedDisableDirectives: false,
+        },
+        rules: {
+            ...style,
+            'no-unused-vars': ['error', unused],
+            'no-useless-assignment': 'off',
+        },
     },
     {
         files: ['**/*.{ts,cts,mts}'],
@@ -58,6 +79,20 @@ export default tseslint.config(
         rules: {
             ...style,
             'no-undef': 'off',
+            'no-unused-vars': 'off',
+            '@typescript-eslint/no-unused-vars': ['error', unused],
+        },
+    },
+    {
+        files: ['**/test/**/*.{js,cjs,mjs}'],
+        rules: {
+            'no-unused-expressions': 'off',
+        },
+    },
+    {
+        files: ['**/test/**/*.{ts,cts,mts}'],
+        rules: {
+            '@typescript-eslint/no-unused-expressions': 'off',
         },
     },
 );

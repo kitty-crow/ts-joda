@@ -125,14 +125,14 @@ jobs:
           set -o pipefail
           npm run test-browser --workspace @js-joda/timezone -- --browserNoActivityTimeout 20000 2>&1 | tee build/browser/timezone.log
       - name: Upload browser test logs
-        if: always()
+        if: always() && steps.browser-core.outcome != 'skipped'
         uses: actions/upload-artifact@v4
         with:
           name: browser-test-logs
           path: build/browser
-          if-no-files-found: error
+          if-no-files-found: ignore
       - name: Check browser test results
-        if: always()
+        if: always() && steps.browser-core.outcome != 'skipped'
         shell: bash
         run: |
           failed=0
