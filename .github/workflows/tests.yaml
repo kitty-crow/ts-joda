@@ -40,20 +40,24 @@ jobs:
           npx lerna bootstrap --no-ci;
       - name: Check refactor compatibility
         run: npm run check:refactor
-      - name: Build
-        run: |
-          set -e;
-          npx lerna run --stream build-dist;
-          npx lerna run --stream build-locale-dist;
-      - name: Test
-        run: |
-          npx lerna run --stream lint;
-          npm run build-esdoc;
-          npx lerna run --stream test;
-          npx lerna run --stream test-ts-definitions;
-          npx lerna run --stream test-coverage;
-          npx lerna run --concurrency 1 --stream test-browser -- -- --browserNoActivityTimeout 20000;
-          npm run build-test-coverage-report;
+      - name: Build distributions
+        run: npx lerna run --stream build-dist
+      - name: Build locale distributions
+        run: npx lerna run --stream build-locale-dist
+      - name: Lint
+        run: npx lerna run --stream lint
+      - name: Build API documentation
+        run: npm run build-esdoc
+      - name: Run unit tests
+        run: npx lerna run --stream test
+      - name: Test TypeScript declarations
+        run: npx lerna run --stream test-ts-definitions
+      - name: Generate package coverage
+        run: npx lerna run --stream test-coverage
+      - name: Run browser tests
+        run: npx lerna run --concurrency 1 --stream test-browser -- -- --browserNoActivityTimeout 20000
+      - name: Build combined coverage report
+        run: npm run build-test-coverage-report
       - name: Push coverage data to coveralls
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         uses: coverallsapp/github-action@v2
