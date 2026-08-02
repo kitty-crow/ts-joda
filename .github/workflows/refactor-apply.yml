@@ -26,7 +26,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat .refactor/v3-* | base64 --decode > /tmp/repo.tar.xz
+          cat .refactor/v2-0? | base64 --decode > /tmp/repo.tar.xz
           echo "$ARCHIVE_SHA256  /tmp/repo.tar.xz" | sha256sum --check --strict
           mkdir /tmp/repo
           tar -xJf /tmp/repo.tar.xz -C /tmp/repo
