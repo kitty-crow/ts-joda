@@ -17,7 +17,7 @@ on:
       - '*.md'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-test:
@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Setup node 24
         uses: actions/setup-node@v6
         with:
@@ -38,7 +40,7 @@ jobs:
           rm -rf node_modules packages/*/node_modules packages/locale/packages/*/node_modules
           set +e
           set -o pipefail
-          npm ci 2>&1 | tee build/deps/npm-install.log
+          npm install 2>&1 | tee build/deps/npm-install.log
           code=${PIPESTATUS[0]}
           cp -f ~/.npm/_logs/*.log build/deps/ 2>/dev/null || true
           exit "$code"
@@ -51,6 +53,18 @@ jobs:
           name: dependency-report
           path: build/deps
           if-no-files-found: error
+      - name: Commit workspace lock
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        shell: bash
+        run: |
+          if git diff --quiet -- package-lock.json; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add package-lock.json
+          git commit -m 'refactor(deps): refresh workspace lock [skip ci]'
+          git push origin HEAD:${GITHUB_HEAD_REF}
       - name: Check refactor compatibility
         run: npm run check:refactor
       - name: Build distributions
