@@ -27,6 +27,8 @@ import { requireInstance, requireNonNull } from './assert';
 import { MathUtil } from './math';
 
 type DayOfMonthType = typeof DayOfMonth & { VALUES: DayOfMonth[] };
+type IsoChronologyType = typeof IsoChronology & { INSTANCE: IsoChronology };
+const ISO = (IsoChronology as IsoChronologyType).INSTANCE;
 
 function values(): DayOfMonth[] {
     return (DayOfMonth as DayOfMonthType).VALUES;
@@ -142,7 +144,7 @@ export class DayOfMonth extends TemporalAccessor {
         requireNonNull(query, 'query');
         requireInstance(query, TemporalQuery, 'query');
         if (query === TemporalQueries.chronology()) {
-            return IsoChronology.INSTANCE as unknown as R;
+            return ISO as unknown as R;
         }
         return super.query(query);
     }
@@ -182,7 +184,7 @@ export class DayOfMonth extends TemporalAccessor {
         return this._day;
     }
 
-    toString(): string {
+    override toString(): string {
         return `DayOfMonth:${this._day}`;
     }
 }
