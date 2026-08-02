@@ -1,0 +1,52 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "js-joda",
+  "entryPointStrategy": "packages",
+  "entryPoints": [
+    "packages/core",
+    "packages/extra",
+    "packages/locale",
+    "packages/timezone"
+  ],
+  "out": "docs",
+  "readme": "README.md",
+  "projectDocuments": [
+    "esdoc/manual/getting-started.md",
+    "esdoc/manual/usage.md",
+    "esdoc/manual/LocalDate.md",
+    "esdoc/manual/LocalTime.md",
+    "esdoc/manual/LocalDateTime.md",
+    "esdoc/manual/ZonedDateTime.md",
+    "esdoc/manual/Period.md",
+    "esdoc/manual/Duration.md",
+    "esdoc/manual/Instant.md",
+    "esdoc/manual/formatting.md",
+    "esdoc/manual/Locale.md",
+    "esdoc/manual/customizing.md",
+    "esdoc/manual/convert-native.md"
+  ],
+  "customJs": ".build/docs/site.js",
+  "cleanOutputDir": true,
+  "searchInComments": true,
+  "searchInDocuments": true,
+  "sortEntryPoints": false,
+  "navigationLinks": {
+    "Repository": "https://github.com/js-joda/js-joda"
+  },
+  "packageOptions": {
+    "entryPoints": [
+      "typings/*.d.ts"
+    ],
+    "entryPointStrategy": "resolve",
+    "alwaysCreateEntryPointModule": true,
+    "readme": "README.md",
+    "disableSources": true,
+    "suppressCommentWarningsInDeclarationFiles": true,
+    "compilerOptions": {
+      "module": "ESNext",
+      "moduleResolution": "Bundler",
+      "target": "ES2022",
+      "skipLibCheck": true
+    }
+  }
+}

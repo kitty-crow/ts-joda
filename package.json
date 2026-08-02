@@ -23,8 +23,9 @@
     "url": "https://github.com/js-joda/js-joda/issues"
   },
   "scripts": {
-    "postpublish": "npm run build-esdoc && ./shared/git-push-docs-on-change.sh",
-    "build-esdoc": "tsx tools/src/commands/docs.ts",
+    "postpublish": "npm run build-docs && ./shared/git-push-docs-on-change.sh",
+    "build-docs": "tsx tools/src/commands/docs.ts",
+    "build-esdoc": "npm run build-docs",
     "build-test-coverage-report": "./shared/build-test-coverage-report.sh",
     "build:dist": "npm run build-dist --workspaces --if-present",
     "build:locale": "npm run build-locale-dist --workspaces --if-present",
@@ -61,9 +62,6 @@
     "cldr-data": "^36.0.5",
     "cldrjs": "^0.5.5",
     "ejs": "^3.1.10",
-    "esdoc": "^1.1.0",
-    "esdoc-inject-script-plugin": "^1.0.0",
-    "esdoc-standard-plugin": "^1.0.0",
     "eslint": "^10.0.1",
     "globals": "^16.2.0",
     "karma": "^6.4.4",
@@ -81,10 +79,11 @@
     "ramda": "^0.32.0",
     "rollup": "^3.30.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "typedoc": "0.28.20",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.65.0",
     "yargs": "^17.7.2",
-    "@types/node": "^18.11.17",
-    "tsx": "^4.20.3"
+    "@types/node": "^18.11.17"
   }
 }

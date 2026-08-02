@@ -1,7 +1,7 @@
-import { buildEsdoc } from '../docs/esdoc.ts';
+import { buildDocs } from '../docs/typedoc.ts';
 import { run } from '../run.ts';
 
 run(async () => {
-    const count = await buildEsdoc();
-    console.log(`Generated documentation from ${count} public runtime source files.`);
+    const count = await buildDocs();
+    console.log(`Generated documentation for ${count} public packages.`);
 });
