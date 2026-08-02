@@ -59,6 +59,11 @@ jobs:
         run: npm run build:locale
       - name: Lint
         run: npm run lint
+      - name: Check cheat-sheet table of contents
+        shell: bash
+        run: |
+          npm run build-md-toc --workspace @js-joda/core
+          git diff --exit-code -- packages/core/CheatSheet.md
       - name: Build API documentation
         run: npm run build-esdoc
       - name: Test core
