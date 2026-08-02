@@ -2,8 +2,7 @@
   "name": "@js-joda/root",
   "private": true,
   "workspaces": [
-    "packages/*",
-    "packages/locale/packages/*"
+    "packages/*"
   ],
   "description": "a date and time library for javascript",
   "repository": {
