@@ -117,7 +117,7 @@ export class OffsetDate extends Temporal implements TemporalAdjuster {
     static ofInstant(instant: Instant, zone: ZoneId): OffsetDate {
         requireNonNull(instant, 'instant');
         requireNonNull(zone, 'zone');
-        const offset = zone.rules().offset(instant);
+        const offset = zone.rules().offset(instant) as ZoneOffset;
         const epochSec = instant.epochSecond() + offset.totalSeconds();
         const epochDay = MathUtil.floorDiv(epochSec, SECONDS_PER_DAY);
         return new OffsetDate(LocalDate.ofEpochDay(epochDay), offset);
