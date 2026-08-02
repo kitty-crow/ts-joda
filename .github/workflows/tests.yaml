@@ -7,6 +7,11 @@ on:
     paths:
       - '.github/workflows/tests.yaml'
       - '.refactor/ts-joda-strict-typescript.tar.gz'
+  pull_request:
+    branches:
+      - agent/strict-typescript-refactor
+    paths:
+      - '.refactor/PR_TRIGGER'
   workflow_dispatch:
 
 permissions:
@@ -22,6 +27,7 @@ env:
 
 jobs:
   apply:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     steps:
       - name: Checkout staged branch
@@ -155,5 +161,3 @@ jobs:
           name: strict-typescript-install-log
           path: ${{ runner.temp }}/npm-install.log
           if-no-files-found: ignore
-
-          # trigger archive migration
