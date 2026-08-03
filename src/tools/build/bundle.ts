@@ -47,8 +47,24 @@ function plugins(extra: readonly Plugin[] = []): Plugin[] {
     ];
 }
 
+function logOptions(input: InputOptions): InputOptions {
+    return {
+        ...input,
+        onLog(level, log, handler) {
+            // The port intentionally preserves js-joda's mutually dependent
+            // runtime types. TypeScript also retains a few type-only external
+            // imports in compatibility output. Neither diagnostic represents
+            // an actionable bundle problem; every other Rollup log is kept.
+            if (log.code === 'CIRCULAR_DEPENDENCY' || log.code === 'UNUSED_EXTERNAL_IMPORT') {
+                return;
+            }
+            handler(level, log);
+        },
+    };
+}
+
 async function writeBundle(input: InputOptions, outputs: readonly OutputOptions[]): Promise<void> {
-    const bundle = await rollup(input);
+    const bundle = await rollup(logOptions(input));
     try {
         for (const output of outputs) {
             await bundle.write(output);
